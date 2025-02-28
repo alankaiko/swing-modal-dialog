@@ -27,7 +27,7 @@ public class FormTable extends FormTableGeneric {
     @Override
     protected void init() {
         setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
-        add(createInfo("Custom Table", "A table is a user interface component that displays a collection of records in a structured, tabular format. It allows users to view, sort, and manage data or other resources.", 1));
+        add(faixaTitulo("Custom Table", "A table is a user interface component that displays a collection of records in a structured, tabular format. It allows users to view, sort, and manage data or other resources.", 1));
         add(createTab(), "gapx 7 7");
     }
 
@@ -198,14 +198,12 @@ public class FormTable extends FormTableGeneric {
                 "thumbInsets:3,3,3,3;" +
                 "background:$Table.background;");
 
-        // create title
         JLabel title = new JLabel("Basic table");
         title.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +2");
         panelTable.add(title, "gapx 20");
         panelTable.add(scrollPane);
 
-        // sample data
         for (ModelEmployee d : SampleData.getSampleBasicEmployeeData()) {
             model.addRow(d.toTableRowBasic(table.getRowCount() + 1));
         }
@@ -231,6 +229,6 @@ public class FormTable extends FormTableGeneric {
 
     @Override
     protected void adicionarActionListener() {
-        this.getCmdCreate().addActionListener(this::showModal);
+        this.getBotaoCriar().addActionListener(this::showModal);
     }
 }

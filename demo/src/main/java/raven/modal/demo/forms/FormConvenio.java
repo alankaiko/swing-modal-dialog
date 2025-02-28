@@ -1,7 +1,6 @@
 package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
@@ -30,7 +29,7 @@ public class FormConvenio extends FormTableGeneric {
     @Override
     protected void init() {
         this.setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
-        this.add(this.createInfo("Convênios", "", 1));
+        this.add(this.faixaTitulo("Convênios", "", 1));
     }
 
     @Override
@@ -44,12 +43,11 @@ public class FormConvenio extends FormTableGeneric {
 
     @Override
     protected void adicionarActionListener() {
-        this.getCmdCreate().addActionListener(this::showModal);
+        this.getBotaoCriar().addActionListener(this::showModal);
     }
 
     private Component tableCustomizada() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
-
         String[] colunas = {"Título", "Descrição"};
 
         List<Function<GrupoExame, Object>> acessadores = Arrays.asList(
@@ -110,20 +108,16 @@ public class FormConvenio extends FormTableGeneric {
         return panel;
     }
 
-
-
-
     private void showModal(ActionEvent e) {
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
                 .setLocation(Location.TRAILING, Location.TOP)
                 .setAnimateDistance(0.7f, 0);
         ModalDialog.showModal(this, new SimpleModalBorder(
-                new SimpleInputForms(), "Createsssssss", SimpleModalBorder.YES_NO_OPTION,
+                new SimpleInputForms(), "Create", SimpleModalBorder.YES_NO_OPTION,
                 (controller, action) -> {
 
                 }), option);
     }
-
 
 }
