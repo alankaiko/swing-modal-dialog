@@ -24,15 +24,6 @@ public class SampleData {
 
     public static List<GrupoExame> getSampleEmployeeData(boolean defaultIcon) {
         List<GrupoExame> list = new ArrayList<>();
-        list.add(new GrupoExame("Business Analyst", "Analytical thinker with experience in business process improvement."));
-        list.add(new GrupoExame("Marketing Manager", "Experienced marketing professional with a focus on digital advertising."));
-        list.add(new GrupoExame("Software Engineer", "Skilled developer proficient in Java, Python, and JavaScript."));
-        list.add(new GrupoExame("Graphic Designer", "Creative designer with expertise in Adobe Creative Suite."));
-        list.add(new GrupoExame("Financial Analyst", "Analytical thinker with a background in financial modeling and forecasting."));
-        list.add(new GrupoExame("Financial Planner", "Certified financial planner with a client-centered approach."));
-        list.add(new GrupoExame("Sales Representative", "Proven track record in sales and client relationship management."));
-        list.add(new GrupoExame("Project Manager", "Organized leader skilled in managing cross-functional teams."));
-        list.add(new GrupoExame("UX/UI Designer", "Design thinker focused on creating intuitive user experiences."));
         return list;
     }
 

@@ -1,27 +1,17 @@
 package raven.modal.demo.model;
 
-public class GrupoExame {
+import raven.modal.demo.core.model.AbstractEntity;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "grupoexame")
+public class GrupoExame extends AbstractEntity {
     private String titulo;
     private String descricao;
-
-    public GrupoExame(String titulo, String descricao) {
-        this.titulo = titulo;
-        this.descricao = descricao;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
 }

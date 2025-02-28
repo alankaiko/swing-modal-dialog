@@ -17,7 +17,6 @@ import raven.modal.option.Location;
 import raven.modal.option.Option;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -36,17 +35,7 @@ public class FormConvenio extends FormTableGeneric {
     protected void criarTabela() {
         JTabbedPane tabb = new JTabbedPane();
         tabb.putClientProperty(FlatClientProperties.STYLE, "" + "tabType:card");
-        tabb.addTab("Listagem", this.createBorder(this.tableCustomizada()));
 
-        this.add(tabb, "gapx 7 7");
-    }
-
-    @Override
-    protected void adicionarActionListener() {
-        this.getBotaoCriar().addActionListener(this::showModal);
-    }
-
-    private Component tableCustomizada() {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
         String[] colunas = {"Título", "Descrição"};
 
@@ -105,7 +94,13 @@ public class FormConvenio extends FormTableGeneric {
         panel.add(this.createHeaderAction());
         panel.add(scrollPane);
 
-        return panel;
+        tabb.addTab("Listagem", this.createBorder(panel));
+        this.add(tabb, "gapx 7 7");
+    }
+
+    @Override
+    protected void adicionarActionListener() {
+        this.getBotaoCriar().addActionListener(this::showModal);
     }
 
     private void showModal(ActionEvent e) {
