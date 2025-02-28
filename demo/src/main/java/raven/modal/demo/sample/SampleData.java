@@ -10,9 +10,7 @@ import org.jfree.data.xy.DefaultHighLowDataset;
 import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.TableXYDataset;
 import raven.extras.AvatarIcon;
-import raven.modal.demo.model.GrupoExame;
-import raven.modal.demo.model.ModelEmployee;
-import raven.modal.demo.model.ModelProfile;
+import raven.modal.demo.model.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -22,8 +20,33 @@ import java.util.List;
 
 public class SampleData {
 
-    public static List<GrupoExame> getSampleEmployeeData(boolean defaultIcon) {
+    public static List<GrupoExame> getGrupoExameData(boolean defaultIcon) {
         List<GrupoExame> list = new ArrayList<>();
+        return list;
+    }
+
+    public static List<Exame> getExameData(boolean defaultIcon) {
+        List<Exame> list = new ArrayList<>();
+        return list;
+    }
+
+    public static List<Paciente> getPacienteData(boolean defaultIcon) {
+        List<Paciente> list = new ArrayList<>();
+        return list;
+    }
+
+    public static List<ProcedimentoMedico> getProcedimentoMedicoData(boolean defaultIcon) {
+        List<ProcedimentoMedico> list = new ArrayList<>();
+        return list;
+    }
+
+    public static List<Profissional> getProfissionalData(boolean defaultIcon) {
+        List<Profissional> list = new ArrayList<>();
+        return list;
+    }
+
+    public static List<Sigla> getSiglaData(boolean defaultIcon) {
+        List<Sigla> list = new ArrayList<>();
         return list;
     }
 

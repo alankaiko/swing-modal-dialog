@@ -5,8 +5,8 @@ import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.TabelaGenerica;
-import raven.modal.demo.model.GrupoExame;
 import raven.modal.demo.model.ModelProfile;
+import raven.modal.demo.model.Sigla;
 import raven.modal.demo.sample.SampleData;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.system.FormTableGeneric;
@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-@SystemForm(name = "Convenio", description = "Tabela de Convênios")
-public class FormConvenio extends FormTableGeneric {
+@SystemForm(name = "Siglas", description = "Tabela de siglas")
+public class FormSigla extends FormTableGeneric {
 
     @Override
     protected void init() {
@@ -39,12 +39,12 @@ public class FormConvenio extends FormTableGeneric {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
         String[] colunas = {"Título", "Descrição"};
 
-        List<Function<GrupoExame, Object>> acessadores = Arrays.asList(
-                GrupoExame::getTitulo,
-                GrupoExame::getDescricao
+        List<Function<Sigla, Object>> acessadores = Arrays.asList(
+                Sigla::getDescricao,
+                Sigla::getDescricao
         );
 
-        TabelaGenerica<GrupoExame> tabela = new TabelaGenerica<>(colunas, acessadores, SampleData.getGrupoExameData(false));
+        TabelaGenerica<Sigla> tabela = new TabelaGenerica<>(colunas, acessadores, SampleData.getSiglaData(false));
 
         JTable table = new JTable(tabela);
         JScrollPane scrollPane = new JScrollPane(table);

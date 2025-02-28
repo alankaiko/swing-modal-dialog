@@ -1,6 +1,7 @@
 package raven.modal.demo.menu;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import raven.extras.AvatarIcon;
 import raven.modal.demo.Demo;
 import raven.modal.demo.forms.*;
 import raven.modal.demo.system.AllForms;
@@ -9,18 +10,19 @@ import raven.modal.demo.system.FormManager;
 import raven.modal.drawer.DrawerPanel;
 import raven.modal.drawer.data.Item;
 import raven.modal.drawer.data.MenuItem;
-import raven.modal.drawer.menu.*;
+import raven.modal.drawer.menu.MenuAction;
+import raven.modal.drawer.menu.MenuEvent;
+import raven.modal.drawer.menu.MenuOption;
+import raven.modal.drawer.menu.MenuStyle;
 import raven.modal.drawer.renderer.DrawerStraightDotLineStyle;
 import raven.modal.drawer.simple.SimpleDrawerBuilder;
 import raven.modal.drawer.simple.footer.LightDarkButtonFooter;
 import raven.modal.drawer.simple.footer.SimpleFooterData;
 import raven.modal.drawer.simple.header.SimpleHeaderData;
-import raven.extras.AvatarIcon;
 import raven.modal.option.Option;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
@@ -75,6 +77,11 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item.Label("MAIN"),
                 new Item("Dashboard", "dashboard.svg", FormDashboard.class),
                 new Item("Convênios", "dashboard.svg", FormConvenio.class),
+                new Item("Exames", "dashboard.svg", FormExame.class),
+                new Item("Paciente", "dashboard.svg", FormPaciente.class),
+                new Item("Procedimentos Médico", "dashboard.svg", FormProcedimentoMedico.class),
+                new Item("Médicos", "dashboard.svg", FormProfissional.class),
+                new Item("Siglas", "dashboard.svg", FormSigla.class),
                 new Item.Label("SWING UI"),
                 new Item("Forms", "forms.svg")
                         .subMenu("Input", FormInput.class)
