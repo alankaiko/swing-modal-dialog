@@ -10,6 +10,7 @@ import org.jfree.data.xy.DefaultHighLowDataset;
 import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.TableXYDataset;
 import raven.extras.AvatarIcon;
+import raven.modal.demo.model.GrupoExame;
 import raven.modal.demo.model.ModelEmployee;
 import raven.modal.demo.model.ModelProfile;
 
@@ -21,7 +22,21 @@ import java.util.List;
 
 public class SampleData {
 
-    public static List<ModelEmployee> getSampleEmployeeData(boolean defaultIcon) {
+    public static List<GrupoExame> getSampleEmployeeData(boolean defaultIcon) {
+        List<GrupoExame> list = new ArrayList<>();
+        list.add(new GrupoExame("Business Analyst", "Analytical thinker with experience in business process improvement."));
+        list.add(new GrupoExame("Marketing Manager", "Experienced marketing professional with a focus on digital advertising."));
+        list.add(new GrupoExame("Software Engineer", "Skilled developer proficient in Java, Python, and JavaScript."));
+        list.add(new GrupoExame("Graphic Designer", "Creative designer with expertise in Adobe Creative Suite."));
+        list.add(new GrupoExame("Financial Analyst", "Analytical thinker with a background in financial modeling and forecasting."));
+        list.add(new GrupoExame("Financial Planner", "Certified financial planner with a client-centered approach."));
+        list.add(new GrupoExame("Sales Representative", "Proven track record in sales and client relationship management."));
+        list.add(new GrupoExame("Project Manager", "Organized leader skilled in managing cross-functional teams."));
+        list.add(new GrupoExame("UX/UI Designer", "Design thinker focused on creating intuitive user experiences."));
+        return list;
+    }
+
+    public static List<ModelEmployee> getSampleEmployeeDatas(boolean defaultIcon) {
         List<ModelEmployee> list = new ArrayList<>();
         list.add(new ModelEmployee("20-August-2024", 1750, "Business Analyst", "Analytical thinker with experience in business process improvement.", new ModelProfile(getProfileIcon("profile_1.jpg", defaultIcon), "Hannah Scott", "Washington, D.C.")));
         list.add(new ModelEmployee("15-May-2024", 1200, "Marketing Manager", "Experienced marketing professional with a focus on digital advertising.", new ModelProfile(getProfileIcon("profile_2.jpg", defaultIcon), "Samantha Smith", "New York City")));

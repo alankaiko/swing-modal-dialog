@@ -21,11 +21,8 @@ import java.awt.*;
 @SystemForm(name = "Slide Pane", description = "slide pane component transitions with animated sliding", tags = {"slider"})
 public class FormSlidePane extends Form {
 
-    public FormSlidePane() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("wrap,fillx", "[fill]", "[][grow,fill]"));
         add(createInfo());
         add(createOptions());

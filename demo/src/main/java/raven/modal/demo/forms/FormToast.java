@@ -22,11 +22,8 @@ import java.util.Random;
 @SystemForm(name = "Toast", description = "toast notification message", tags = {"alert"})
 public class FormToast extends Form {
 
-    public FormToast() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("wrap,fillx", "[fill]"));
         add(createInfo());
         add(createOptions());

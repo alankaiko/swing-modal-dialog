@@ -15,11 +15,8 @@ import java.time.LocalTime;
 @SystemForm(name = "DateTime", description = "date time picker user interface component")
 public class FormDateTime extends Form {
 
-    public FormDateTime() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("wrap,fillx", "[fill]"));
         add(createInfo());
         add(createOptions());

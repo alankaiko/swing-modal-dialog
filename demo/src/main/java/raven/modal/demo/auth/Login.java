@@ -8,12 +8,8 @@ import raven.modal.demo.system.FormManager;
 import javax.swing.*;
 
 public class Login extends Form {
-
-    public Login() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("fill,insets 20", "[center]", "[center]"));
         txtUsername = new JTextField();
         txtPassword = new JPasswordField();

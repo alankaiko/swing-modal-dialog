@@ -14,11 +14,8 @@ import java.awt.*;
 @SystemForm(name = "Avatar Icon", description = "avatar icon graphical element", tags = {"profile", "photo", "image", "circle", "picture"})
 public class FormAvatarIcon extends Form {
 
-    public FormAvatarIcon() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("wrap,fillx", "[fill]"));
         add(createInfo());
         add(createOptions());

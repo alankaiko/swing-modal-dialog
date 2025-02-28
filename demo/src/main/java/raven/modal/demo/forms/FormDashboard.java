@@ -23,11 +23,8 @@ import java.awt.*;
 @SystemForm(name = "Dashboard", description = "dashboard form display some details")
 public class FormDashboard extends Form {
 
-    public FormDashboard() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("wrap,fill", "[fill]", "[grow 0][fill]"));
         createTitle();
         createPanelLayout();

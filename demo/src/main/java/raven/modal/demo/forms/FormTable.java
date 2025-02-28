@@ -1,7 +1,6 @@
 package raven.modal.demo.forms;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
@@ -9,7 +8,7 @@ import raven.modal.demo.model.ModelEmployee;
 import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.sample.SampleData;
 import raven.modal.demo.simple.SimpleInputForms;
-import raven.modal.demo.system.Form;
+import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.demo.utils.table.CheckBoxTableHeaderRenderer;
 import raven.modal.demo.utils.table.TableHeaderAlignment;
@@ -20,32 +19,16 @@ import raven.modal.option.Option;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 @SystemForm(name = "Table", description = "table is a user interface component", tags = {"list"})
-public class FormTable extends Form {
+public class FormTable extends FormTableGeneric {
 
-    public FormTable() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         add(createInfo("Custom Table", "A table is a user interface component that displays a collection of records in a structured, tabular format. It allows users to view, sort, and manage data or other resources.", 1));
         add(createTab(), "gapx 7 7");
-    }
-
-    private JPanel createInfo(String title, String description, int level) {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
-        JLabel lbTitle = new JLabel(title);
-        JTextPane text = new JTextPane();
-        text.setText(description);
-        text.setEditable(false);
-        text.setBorder(BorderFactory.createEmptyBorder());
-        lbTitle.putClientProperty(FlatClientProperties.STYLE, "" +
-                "font:bold +" + (4 - level));
-        panel.add(lbTitle);
-        panel.add(text, "width 500");
-        return panel;
     }
 
     private Component createTab() {
@@ -55,12 +38,6 @@ public class FormTable extends Form {
         tabb.addTab("Basic table", createBorder(createBasicTable()));
         tabb.addTab("Custom table", createBorder(createCustomTable()));
         return tabb;
-    }
-
-    private Component createBorder(Component component) {
-        JPanel panel = new JPanel(new MigLayout("fill,insets 7 0 7 0", "[fill]", "[fill]"));
-        panel.add(component);
-        return panel;
     }
 
     private Component createCustomTable() {
@@ -156,7 +133,7 @@ public class FormTable extends Form {
         panel.add(scrollPane);
 
         // sample data
-        for (ModelEmployee d : SampleData.getSampleEmployeeData(false)) {
+        for (ModelEmployee d : SampleData.getSampleEmployeeDatas(false)) {
             model.addRow(d.toTableRowCustom(table.getRowCount() + 1));
         }
         return panel;
@@ -235,36 +212,25 @@ public class FormTable extends Form {
         return panelTable;
     }
 
-    private Component createHeaderAction() {
-        JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
-
-        JTextField txtSearch = new JTextField();
-        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search...");
-        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("raven/modal/demo/icons/search.svg", 0.4f));
-        JButton cmdCreate = new JButton("Create");
-        JButton cmdEdit = new JButton("Edit");
-        JButton cmdDelete = new JButton("Delete");
-
-        cmdCreate.addActionListener(e -> showModal());
-        panel.add(txtSearch);
-        panel.add(cmdCreate);
-        panel.add(cmdEdit);
-        panel.add(cmdDelete);
-
-        panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "background:null;");
-        return panel;
-    }
-
-    private void showModal() {
+    private void showModal(ActionEvent e) {
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
                 .setLocation(Location.TRAILING, Location.TOP)
                 .setAnimateDistance(0.7f, 0);
         ModalDialog.showModal(this, new SimpleModalBorder(
-                new SimpleInputForms(), "Create", SimpleModalBorder.YES_NO_OPTION,
+                new SimpleInputForms(), "Createoooowwwwwww", SimpleModalBorder.YES_NO_OPTION,
                 (controller, action) -> {
 
                 }), option);
+    }
+
+    @Override
+    protected void criarTabela() {
+
+    }
+
+    @Override
+    protected void adicionarActionListener() {
+        this.getCmdCreate().addActionListener(this::showModal);
     }
 }

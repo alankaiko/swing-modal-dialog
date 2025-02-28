@@ -21,11 +21,8 @@ import java.awt.*;
 @SystemForm(name = "Modal", description = "modal dialog user interface element", tags = {"dialog", "popup"})
 public class FormModal extends Form {
 
-    public FormModal() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("wrap,fillx", "[fill]"));
         add(createInfo());
         add(createOptions());

@@ -28,11 +28,8 @@ import java.awt.event.ActionEvent;
 @SystemForm(name = "Setting", description = "application setting and configuration", tags = {"themes", "options"})
 public class FormSetting extends Form {
 
-    public FormSetting() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("fill", "[fill][fill,grow 0,250:250]", "[fill]"));
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Layout", createLayoutOption());

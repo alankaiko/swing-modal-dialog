@@ -2,16 +2,15 @@ package raven.modal.demo.system;
 
 import javax.swing.*;
 
-public class Form extends JPanel {
+public abstract class Form extends JPanel {
 
     private LookAndFeel oldTheme = UIManager.getLookAndFeel();
 
     public Form() {
-        init();
+        this.init();
     }
 
-    private void init() {
-    }
+    protected abstract void init();
 
     public void formInit() {
     }
@@ -28,4 +27,5 @@ public class Form extends JPanel {
             SwingUtilities.updateComponentTreeUI(this);
         }
     }
+
 }

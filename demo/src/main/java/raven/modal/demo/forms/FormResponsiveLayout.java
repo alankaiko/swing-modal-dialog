@@ -17,11 +17,8 @@ import java.util.function.Consumer;
 @SystemForm(name = "Responsive Layout", description = "responsive layout user interface", tags = {"card"})
 public class FormResponsiveLayout extends Form {
 
-    public FormResponsiveLayout() {
-        init();
-    }
-
-    private void init() {
+    @Override
+    protected void init() {
         setLayout(new MigLayout("wrap,fill", "[fill]", "[grow 0][fill]"));
         add(createInfo());
         add(createOptions());
@@ -31,7 +28,7 @@ public class FormResponsiveLayout extends Form {
     public void formInit() {
         // add sample data
         panelCard.removeAll();
-        for (ModelEmployee employee : SampleData.getSampleEmployeeData(true)) {
+        for (ModelEmployee employee : SampleData.getSampleEmployeeDatas(true)) {
             panelCard.add(new Card(employee, createEventCard()));
         }
         panelCard.repaint();
