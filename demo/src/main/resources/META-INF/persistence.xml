@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+             version="2.1">
+    <persistence-unit name="meuPU" transaction-type="RESOURCE_LOCAL">
+        <!-- Configurações de banco de dados -->
+        <properties>
+            <!-- Driver JDBC -->
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+
+            <!-- URL de conexão -->
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/testebanco"/>
+
+            <!-- Usuário e Senha -->
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+            <property name="javax.persistence.jdbc.password" value="admin"/>
+
+            <!-- Pool de conexões -->
+            <property name="hibernate.c3p0.min_size" value="5"/>
+            <property name="hibernate.c3p0.max_size" value="20"/>
+
+            <!-- Exibição de SQL -->
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
+
+            <!-- Geração de DDL -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <!-- Dialeto PostgreSQL -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
+
+            <!-- Gerenciamento de sessão -->
+            <property name="hibernate.current_session_context_class" value="thread"/>
+            <property name="hibernate.physical_naming_strategy" value="raven.modal.demo.utils.SnakeCasePhysicalNamingStrategy"/>
+
+        </properties>
+    </persistence-unit>
+</persistence>

@@ -5,8 +5,11 @@ import raven.modal.demo.model.GrupoExame;
 import raven.modal.demo.model.GrupoExame_;
 import raven.modal.demo.model.dto.GrupoExameDTO;
 import raven.modal.demo.repository.GrupoExameRepository;
+import raven.modal.demo.utils.EntityManagerFactorySingleton;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -18,8 +21,7 @@ public class GrupoExameRepositoryImpl implements GrupoExameRepository {
     private EntityManager entityManager;
 
     public GrupoExameRepositoryImpl() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("meuPU");
-        this.entityManager = emf.createEntityManager();
+        this.entityManager = EntityManagerFactorySingleton.getEntityManager();
     }
 
     @Override

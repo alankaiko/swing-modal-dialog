@@ -12,9 +12,12 @@ public abstract class FormTableGeneric extends Form {
     private JButton botaoCriar, botaoEditar, botaoDeletar;
 
     public FormTableGeneric() {
+        this.carregarObjetos();
         this.criarTabela();
         this.adicionarActionListener();
     }
+
+    protected abstract void carregarObjetos();
 
     protected abstract void criarTabela();
 

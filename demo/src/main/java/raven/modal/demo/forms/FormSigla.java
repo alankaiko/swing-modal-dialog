@@ -7,7 +7,9 @@ import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.TabelaGenerica;
 import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.model.Sigla;
-import raven.modal.demo.sample.SampleData;
+import raven.modal.demo.model.dto.SiglaDTO;
+import raven.modal.demo.service.SiglaService;
+import raven.modal.demo.service.impl.SiglaServiceImpl;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
@@ -22,13 +24,24 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-@SystemForm(name = "Siglas", description = "Tabela de siglas")
+@SystemForm(name = "Sigla", description = "Tabela de Siglas")
 public class FormSigla extends FormTableGeneric {
+    List<Sigla> lista;
+    private SiglaService siglaService;
 
     @Override
     protected void init() {
         this.setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
-        this.add(this.faixaTitulo("Convênios", "", 1));
+        this.add(this.faixaTitulo("Siglas", "", 1));
+    }
+
+    @Override
+    protected void carregarObjetos() {
+        SiglaDTO filtro = new SiglaDTO();
+        filtro.setItensPorPagina(20);
+
+        this.siglaService = new SiglaServiceImpl();
+        this.lista = this.siglaService.filtrando(filtro);
     }
 
     @Override
@@ -44,7 +57,7 @@ public class FormSigla extends FormTableGeneric {
                 Sigla::getDescricao
         );
 
-        TabelaGenerica<Sigla> tabela = new TabelaGenerica<>(colunas, acessadores, SampleData.getSiglaData(false));
+        TabelaGenerica<Sigla> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
 
         JTable table = new JTable(tabela);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -88,7 +101,7 @@ public class FormSigla extends FormTableGeneric {
                 "thumbInsets:3,3,3,3;" +
                 "background:$Table.background;");
 
-        JLabel title = new JLabel("Lista de Convênios");
+        JLabel title = new JLabel("Lista de Siglas");
         title.putClientProperty(FlatClientProperties.STYLE, "" + "font:bold +2");
         panel.add(title, "gapx 20");
         panel.add(this.createHeaderAction());

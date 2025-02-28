@@ -7,7 +7,9 @@ import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.TabelaGenerica;
 import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.model.ProcedimentoMedico;
-import raven.modal.demo.sample.SampleData;
+import raven.modal.demo.model.dto.ProcedimentoMedicoDTO;
+import raven.modal.demo.service.ProcedimentoMedicoService;
+import raven.modal.demo.service.impl.ProcedimentoMedicoServiceImpl;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
@@ -24,11 +26,22 @@ import java.util.function.Function;
 
 @SystemForm(name = "Procedimentos Médico", description = "Tabela de Procedimentos Médico")
 public class FormProcedimentoMedico extends FormTableGeneric {
+    List<ProcedimentoMedico> lista;
+    private ProcedimentoMedicoService procedimentoMedicoService;
 
     @Override
     protected void init() {
         this.setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         this.add(this.faixaTitulo("Procedimentos Médico", "", 1));
+    }
+
+    @Override
+    protected void carregarObjetos() {
+        ProcedimentoMedicoDTO filtro = new ProcedimentoMedicoDTO();
+        filtro.setItensPorPagina(20);
+
+        this.procedimentoMedicoService = new ProcedimentoMedicoServiceImpl();
+        this.lista = this.procedimentoMedicoService.filtrando(filtro);
     }
 
     @Override
@@ -44,7 +57,7 @@ public class FormProcedimentoMedico extends FormTableGeneric {
                 ProcedimentoMedico::getTitulo
         );
 
-        TabelaGenerica<ProcedimentoMedico> tabela = new TabelaGenerica<>(colunas, acessadores, SampleData.getProcedimentoMedicoData(false));
+        TabelaGenerica<ProcedimentoMedico> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
 
         JTable table = new JTable(tabela);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -88,7 +101,7 @@ public class FormProcedimentoMedico extends FormTableGeneric {
                 "thumbInsets:3,3,3,3;" +
                 "background:$Table.background;");
 
-        JLabel title = new JLabel("Lista de Convênios");
+        JLabel title = new JLabel("Lista de Procedimentos Médico");
         title.putClientProperty(FlatClientProperties.STYLE, "" + "font:bold +2");
         panel.add(title, "gapx 20");
         panel.add(this.createHeaderAction());

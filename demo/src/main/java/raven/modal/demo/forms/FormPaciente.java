@@ -7,7 +7,9 @@ import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.TabelaGenerica;
 import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.model.Paciente;
-import raven.modal.demo.sample.SampleData;
+import raven.modal.demo.model.dto.PacienteDTO;
+import raven.modal.demo.service.PacienteService;
+import raven.modal.demo.service.impl.PacienteServiceImpl;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
@@ -24,11 +26,22 @@ import java.util.function.Function;
 
 @SystemForm(name = "Pacientes", description = "Tabela de Pacientes")
 public class FormPaciente extends FormTableGeneric {
+    List<Paciente> lista;
+    private PacienteService pacienteService;
 
     @Override
     protected void init() {
         this.setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         this.add(this.faixaTitulo("Pacientes", "", 1));
+    }
+
+    @Override
+    protected void carregarObjetos() {
+        PacienteDTO filtro = new PacienteDTO();
+        filtro.setItensPorPagina(20);
+
+        this.pacienteService = new PacienteServiceImpl();
+        this.lista = this.pacienteService.filtrando(filtro);
     }
 
     @Override
@@ -44,7 +57,7 @@ public class FormPaciente extends FormTableGeneric {
                 Paciente::getNome
         );
 
-        TabelaGenerica<Paciente> tabela = new TabelaGenerica<>(colunas, acessadores, SampleData.getPacienteData(false));
+        TabelaGenerica<Paciente> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
 
         JTable table = new JTable(tabela);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -88,7 +101,7 @@ public class FormPaciente extends FormTableGeneric {
                 "thumbInsets:3,3,3,3;" +
                 "background:$Table.background;");
 
-        JLabel title = new JLabel("Lista de Convênios");
+        JLabel title = new JLabel("Lista de Pacientes");
         title.putClientProperty(FlatClientProperties.STYLE, "" + "font:bold +2");
         panel.add(title, "gapx 20");
         panel.add(this.createHeaderAction());

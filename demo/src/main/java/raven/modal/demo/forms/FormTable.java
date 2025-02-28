@@ -223,6 +223,11 @@ public class FormTable extends FormTableGeneric {
     }
 
     @Override
+    protected void carregarObjetos() {
+
+    }
+
+    @Override
     protected void criarTabela() {
 
     }

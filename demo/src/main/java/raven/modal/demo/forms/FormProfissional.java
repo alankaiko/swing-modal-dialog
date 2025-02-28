@@ -7,7 +7,9 @@ import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.TabelaGenerica;
 import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.model.Profissional;
-import raven.modal.demo.sample.SampleData;
+import raven.modal.demo.model.dto.ProfissionalDTO;
+import raven.modal.demo.service.ProfissionalService;
+import raven.modal.demo.service.impl.ProfissionalServiceImpl;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
@@ -24,11 +26,22 @@ import java.util.function.Function;
 
 @SystemForm(name = "Médicos", description = "Tabela de Médicos")
 public class FormProfissional extends FormTableGeneric {
+    List<Profissional> lista;
+    private ProfissionalService profissionalService;
 
     @Override
     protected void init() {
         this.setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         this.add(this.faixaTitulo("Médicos", "", 1));
+    }
+
+    @Override
+    protected void carregarObjetos() {
+        ProfissionalDTO filtro = new ProfissionalDTO();
+        filtro.setItensPorPagina(20);
+
+        this.profissionalService = new ProfissionalServiceImpl();
+        this.lista = this.profissionalService.filtrando(filtro);
     }
 
     @Override
@@ -44,7 +57,7 @@ public class FormProfissional extends FormTableGeneric {
                 Profissional::getNome
         );
 
-        TabelaGenerica<Profissional> tabela = new TabelaGenerica<>(colunas, acessadores, SampleData.getProfissionalData(false));
+        TabelaGenerica<Profissional> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
 
         JTable table = new JTable(tabela);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -88,7 +101,7 @@ public class FormProfissional extends FormTableGeneric {
                 "thumbInsets:3,3,3,3;" +
                 "background:$Table.background;");
 
-        JLabel title = new JLabel("Lista de Convênios");
+        JLabel title = new JLabel("Lista de Profissional");
         title.putClientProperty(FlatClientProperties.STYLE, "" + "font:bold +2");
         panel.add(title, "gapx 20");
         panel.add(this.createHeaderAction());

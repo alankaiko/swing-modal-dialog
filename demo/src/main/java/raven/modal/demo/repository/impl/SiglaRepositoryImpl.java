@@ -1,10 +1,10 @@
 package raven.modal.demo.repository.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import raven.modal.demo.model.Paciente;
-import raven.modal.demo.model.Paciente_;
-import raven.modal.demo.model.dto.PacienteDTO;
-import raven.modal.demo.repository.PacienteRepository;
+import raven.modal.demo.model.Sigla;
+import raven.modal.demo.model.Sigla_;
+import raven.modal.demo.model.dto.SiglaDTO;
+import raven.modal.demo.repository.SiglaRepository;
 import raven.modal.demo.utils.EntityManagerFactorySingleton;
 
 import javax.persistence.EntityManager;
@@ -17,23 +17,23 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PacienteRepositoryImpl implements PacienteRepository {
+public class SiglaRepositoryImpl implements SiglaRepository {
     private EntityManager entityManager;
 
-    public PacienteRepositoryImpl() {
+    public SiglaRepositoryImpl() {
         this.entityManager = EntityManagerFactorySingleton.getEntityManager();
     }
 
     @Override
-    public Paciente salvar(Paciente paciente) {
+    public Sigla salvar(Sigla sigla) {
         EntityTransaction transaction = null;
 
         try {
             transaction = this.entityManager.getTransaction();
             transaction.begin();
-            this.entityManager.persist(paciente);
+            this.entityManager.persist(sigla);
             transaction.commit();
-            return paciente;
+            return sigla;
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
@@ -49,10 +49,10 @@ public class PacienteRepositoryImpl implements PacienteRepository {
         try {
             transaction = this.entityManager.getTransaction();
             transaction.begin();
-            Paciente entidade = this.entityManager.find(Paciente.class, codigo);
+            Sigla sigla = this.entityManager.find(Sigla.class, codigo);
 
-            if (entidade != null) {
-                this.entityManager.remove(entidade);
+            if (sigla != null) {
+                this.entityManager.remove(sigla);
             }
             transaction.commit();
         } catch (Exception e) {
@@ -64,36 +64,37 @@ public class PacienteRepositoryImpl implements PacienteRepository {
     }
 
     @Override
-    public Paciente buscarId(Long codigo) {
+    public Sigla buscarId(Long codigo) {
         try {
-            return this.entityManager.find(Paciente.class, codigo);
+            return this.entityManager.find(Sigla.class, codigo);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar a entidade", e);
         }
     }
 
     @Override
-    public List<Paciente> listar() {
+    public List<Sigla> listar() {
         try {
             CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
-            CriteriaQuery<Paciente> query = builder.createQuery(Paciente.class);
-            query.from(Paciente.class);
+            CriteriaQuery<Sigla> query = builder.createQuery(Sigla.class);
+            query.from(Sigla.class);
             return this.entityManager.createQuery(query).getResultList();
         } catch (Exception e) {
             throw new RuntimeException("Erro ao listar entidades", e);
         }
     }
 
-    public List<Paciente> filtrando(PacienteDTO filtro) {
+    @Override
+    public List<Sigla> filtrando(SiglaDTO filtro) {
         try {
             CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
-            CriteriaQuery<Paciente> query = builder.createQuery(Paciente.class);
-            Root<Paciente> root = query.from(Paciente.class);
+            CriteriaQuery<Sigla> query = builder.createQuery(Sigla.class);
+            Root<Sigla> root = query.from(Sigla.class);
 
             Predicate[] predicates = this.adicionarRestricoes(builder, filtro, root);
             query.where(predicates);
 
-            TypedQuery<Paciente> typedQuery = this.entityManager.createQuery(query);
+            TypedQuery<Sigla> typedQuery = this.entityManager.createQuery(query);
 
             if (filtro.getItensPorPagina() != 0)
                 typedQuery.setMaxResults(filtro.getItensPorPagina());
@@ -107,32 +108,11 @@ public class PacienteRepositoryImpl implements PacienteRepository {
         }
     }
 
-    private Predicate[] adicionarRestricoes(CriteriaBuilder builder, PacienteDTO filtro, Root<Paciente> root) {
+    private Predicate[] adicionarRestricoes(CriteriaBuilder builder, SiglaDTO filtro, Root<Sigla> root) {
         List<Predicate> lista = new ArrayList<>();
 
-        if (!StringUtils.isEmpty(filtro.getNome()))
-            lista.add(builder.like(builder.lower(root.get(Paciente_.nome)), "%" + filtro.getNome().toLowerCase() + "%"));
-
-        if (filtro.getDatanascimento() != null)
-            lista.add(builder.equal(root.get(Paciente_.datanascimento), filtro.getDatanascimento()));
-
-        if (filtro.getDatainicial() != null)
-            lista.add(builder.greaterThanOrEqualTo(root.get(Paciente_.datacadastro), filtro.getDatainicial()));
-
-        if (filtro.getDatafinal() != null)
-            lista.add(builder.lessThanOrEqualTo(root.get(Paciente_.datacadastro), filtro.getDatafinal()));
-
-        if (!StringUtils.isEmpty(filtro.getCpf()))
-            lista.add(builder.like(builder.lower(root.get(Paciente_.cpf)), "%" + filtro.getCpf().toLowerCase() + "%"));
-
-        if (!StringUtils.isEmpty(filtro.getRg()))
-            lista.add(builder.like(builder.lower(root.get(Paciente_.rg)), "%" + filtro.getRg().toLowerCase() + "%"));
-
-        if (!filtro.isDesativado())
-            lista.add(builder.equal(root.get(Paciente_.desativado), filtro.isDesativado()));
-
-        if (filtro.isDicom())
-            lista.add(builder.equal(root.get(Paciente_.dicom), filtro.isDicom()));
+        if (!StringUtils.isEmpty(filtro.getDescricao()))
+            lista.add(builder.like(builder.lower(root.get(Sigla_.descricao)), "%" + filtro.getDescricao().toLowerCase() + "%"));
 
         return lista.toArray(new Predicate[lista.size()]);
     }

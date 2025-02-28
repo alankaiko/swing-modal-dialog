@@ -7,7 +7,9 @@ import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.TabelaGenerica;
 import raven.modal.demo.model.Exame;
 import raven.modal.demo.model.ModelProfile;
-import raven.modal.demo.sample.SampleData;
+import raven.modal.demo.model.dto.ExameDTO;
+import raven.modal.demo.service.ExameService;
+import raven.modal.demo.service.impl.ExameServiceImpl;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
@@ -24,11 +26,22 @@ import java.util.function.Function;
 
 @SystemForm(name = "Exames", description = "Tabela de Exames")
 public class FormExame extends FormTableGeneric {
+    List<Exame> lista;
+    private ExameService exameService;
 
     @Override
     protected void init() {
         this.setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         this.add(this.faixaTitulo("Exames", "", 1));
+    }
+
+    @Override
+    protected void carregarObjetos() {
+        ExameDTO filtro = new ExameDTO();
+        filtro.setItensPorPagina(20);
+
+        this.exameService = new ExameServiceImpl();
+        this.lista = this.exameService.filtrando(filtro);
     }
 
     @Override
@@ -44,7 +57,7 @@ public class FormExame extends FormTableGeneric {
                 Exame::getDescricao
         );
 
-        TabelaGenerica<Exame> tabela = new TabelaGenerica<>(colunas, acessadores, SampleData.getExameData(false));
+        TabelaGenerica<Exame> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
 
         JTable table = new JTable(tabela);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -88,7 +101,7 @@ public class FormExame extends FormTableGeneric {
                 "thumbInsets:3,3,3,3;" +
                 "background:$Table.background;");
 
-        JLabel title = new JLabel("Lista de Convênios");
+        JLabel title = new JLabel("Lista de Exames");
         title.putClientProperty(FlatClientProperties.STYLE, "" + "font:bold +2");
         panel.add(title, "gapx 20");
         panel.add(this.createHeaderAction());

@@ -5,9 +5,11 @@ import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.TabelaGenerica;
-import raven.modal.demo.model.GrupoExame;
+import raven.modal.demo.model.Convenio;
 import raven.modal.demo.model.ModelProfile;
-import raven.modal.demo.sample.SampleData;
+import raven.modal.demo.model.dto.ConvenioDTO;
+import raven.modal.demo.service.ConvenioService;
+import raven.modal.demo.service.impl.ConvenioServiceImpl;
 import raven.modal.demo.simple.SimpleInputForms;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
@@ -24,11 +26,22 @@ import java.util.function.Function;
 
 @SystemForm(name = "Convenio", description = "Tabela de Convênios")
 public class FormConvenio extends FormTableGeneric {
+    List<Convenio> lista;
+    private ConvenioService convenioService;
 
     @Override
     protected void init() {
         this.setLayout(new MigLayout("fillx,wrap", "[fill]", "[][fill,grow]"));
         this.add(this.faixaTitulo("Convênios", "", 1));
+    }
+
+    @Override
+    protected void carregarObjetos() {
+        ConvenioDTO filtro = new ConvenioDTO();
+        filtro.setItensPorPagina(20);
+
+        this.convenioService = new ConvenioServiceImpl();
+        this.lista = this.convenioService.filtrando(filtro);
     }
 
     @Override
@@ -39,12 +52,12 @@ public class FormConvenio extends FormTableGeneric {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
         String[] colunas = {"Título", "Descrição"};
 
-        List<Function<GrupoExame, Object>> acessadores = Arrays.asList(
-                GrupoExame::getTitulo,
-                GrupoExame::getDescricao
+        List<Function<Convenio, Object>> acessadores = Arrays.asList(
+                Convenio::getNome,
+                Convenio::getNome
         );
 
-        TabelaGenerica<GrupoExame> tabela = new TabelaGenerica<>(colunas, acessadores, SampleData.getGrupoExameData(false));
+        TabelaGenerica<Convenio> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
 
         JTable table = new JTable(tabela);
         JScrollPane scrollPane = new JScrollPane(table);

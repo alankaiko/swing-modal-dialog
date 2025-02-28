@@ -5,8 +5,11 @@ import raven.modal.demo.model.Convenio;
 import raven.modal.demo.model.Convenio_;
 import raven.modal.demo.model.dto.ConvenioDTO;
 import raven.modal.demo.repository.ConvenioRepository;
+import raven.modal.demo.utils.EntityManagerFactorySingleton;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -18,8 +21,7 @@ public class ConvenioRepositoryImpl implements ConvenioRepository {
     private EntityManager entityManager;
 
     public ConvenioRepositoryImpl() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("meuPU");
-        this.entityManager = emf.createEntityManager();
+        this.entityManager = EntityManagerFactorySingleton.getEntityManager();
     }
 
     @Override

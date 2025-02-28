@@ -4,8 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 import raven.modal.demo.model.*;
 import raven.modal.demo.model.dto.ProfissionalDTO;
 import raven.modal.demo.repository.ProfissionalRepository;
+import raven.modal.demo.utils.EntityManagerFactorySingleton;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +17,7 @@ public class ProfissionalRepositoryImpl implements ProfissionalRepository {
     private EntityManager entityManager;
 
     public ProfissionalRepositoryImpl() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("meuPU");
-        this.entityManager = emf.createEntityManager();
+        this.entityManager = EntityManagerFactorySingleton.getEntityManager();
     }
 
     @Override

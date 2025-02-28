@@ -5,8 +5,11 @@ import raven.modal.demo.model.ProcedimentoMedico;
 import raven.modal.demo.model.ProcedimentoMedico_;
 import raven.modal.demo.model.dto.ProcedimentoMedicoDTO;
 import raven.modal.demo.repository.ProcedimentoMedicoRepository;
+import raven.modal.demo.utils.EntityManagerFactorySingleton;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -18,8 +21,7 @@ public class ProcedimentoMedicoRepositoryImpl implements ProcedimentoMedicoRepos
     private EntityManager entityManager;
 
     public ProcedimentoMedicoRepositoryImpl() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("meuPU");
-        this.entityManager = emf.createEntityManager();
+        this.entityManager = EntityManagerFactorySingleton.getEntityManager();
     }
 
     @Override
