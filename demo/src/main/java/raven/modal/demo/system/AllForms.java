@@ -32,7 +32,7 @@ public class AllForms {
             formInit(form);
             return form;
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
-                 IllegalAccessException e) {
+                IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

@@ -74,6 +74,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         MenuItem items[] = new MenuItem[]{
                 new Item.Label("MAIN"),
                 new Item("Dashboard", "dashboard.svg", FormDashboard.class),
+                new Item("Convênios", "dashboard.svg", FormConvenio.class),
                 new Item.Label("SWING UI"),
                 new Item("Forms", "forms.svg")
                         .subMenu("Input", FormInput.class)
