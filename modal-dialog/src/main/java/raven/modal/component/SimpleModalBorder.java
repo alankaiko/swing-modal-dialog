@@ -162,11 +162,11 @@ public class SimpleModalBorder extends Modal implements ModalBorderAction {
         checkOptionType(optionType);
         Option[] options = null;
         if (optionType == YES_NO_OPTION) {
-            options = new Option[]{new Option("Yes", YES_OPTION), new Option("No", NO_OPTION)};
+            options = new Option[]{new Option("Salvar", YES_OPTION), new Option("Voltar", NO_OPTION)};
         } else if (optionType == YES_NO_CANCEL_OPTION) {
-            options = new Option[]{new Option("Yes", YES_OPTION), new Option("No", NO_OPTION), new Option("Cancel", CANCEL_OPTION)};
+            options = new Option[]{new Option("Salvar", YES_OPTION), new Option("Voltar", NO_OPTION), new Option("Cancelar", CANCEL_OPTION)};
         } else if (optionType == OK_CANCEL_OPTION) {
-            options = new Option[]{new Option("Ok", OK_OPTION), new Option("Cancel", CANCEL_OPTION)};
+            options = new Option[]{new Option("Salvar", OK_OPTION), new Option("Cancelar", CANCEL_OPTION)};
         }
         return options;
     }

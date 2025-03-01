@@ -10,7 +10,7 @@ import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.model.dto.ConvenioDTO;
 import raven.modal.demo.service.ConvenioService;
 import raven.modal.demo.service.impl.ConvenioServiceImpl;
-import raven.modal.demo.simple.SimpleInputForms;
+import raven.modal.demo.simple.ConvenioForm;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.demo.utils.table.TableHeaderAlignment;
@@ -28,6 +28,8 @@ import java.util.function.Function;
 public class FormConvenio extends FormTableGeneric {
     List<Convenio> lista;
     private ConvenioService convenioService;
+    private ConvenioForm convenioForm;
+    private Convenio convenio;
 
     @Override
     protected void init() {
@@ -117,15 +119,37 @@ public class FormConvenio extends FormTableGeneric {
     }
 
     private void showModal(ActionEvent e) {
+        if (this.convenioForm == null)
+            this.convenioForm = new ConvenioForm();
+
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
-                .setLocation(Location.TRAILING, Location.TOP)
+                .setLocation(Location.CENTER, Location.CENTER)
+                .setSize(900, 460)
                 .setAnimateDistance(0.7f, 0);
-        ModalDialog.showModal(this, new SimpleModalBorder(
-                new SimpleInputForms(), "Create", SimpleModalBorder.YES_NO_OPTION,
-                (controller, action) -> {
 
+        ModalDialog.showModal(this, new SimpleModalBorder(
+                this.convenioForm,
+                "Cadastro de Convênio",
+                SimpleModalBorder.YES_NO_OPTION,
+                (controller, action) -> {
+                    if (action == SimpleModalBorder.YES_NO_OPTION) {
+                        this.salvar();
+                    }
                 }), option);
+    }
+
+    private void salvar() {
+        if (this.convenio == null)
+            this.convenio = new Convenio();
+
+        this.convenio.setCodigo(Long.valueOf(this.convenioForm.getRegistroConvenio().getText()));
+        this.convenio.setCodconvenio(Long.valueOf(this.convenioForm.getCodImportacao().getText()));
+        this.convenio.setDatacadastro(this.convenioForm.getCampoDataFormatada().getDatePicker().getSelectedDate());
+        this.convenio.setAtivo(this.convenioForm.getAtivo().isSelected());
+
+        System.out.println(this.convenio.toString());
+//        this.convenioService.salvar(this.convenio);
     }
 
 }

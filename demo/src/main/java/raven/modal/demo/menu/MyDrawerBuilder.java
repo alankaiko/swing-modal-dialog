@@ -140,15 +140,15 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
             public void selected(MenuAction action, int[] index) {
                 Class<?> itemClass = action.getItem().getItemClass();
                 int i = index[0];
-                if (i == 8) {
-                    action.consume();
-                    FormManager.showAbout();
-                    return;
-                } else if (i == 9) {
-                    action.consume();
-                    FormManager.logout();
-                    return;
-                }
+//                if (i == 8) {
+//                    action.consume();
+//                    FormManager.showAbout();
+//                    return;
+//                } else if (i == 9) {
+//                    action.consume();
+//                    FormManager.logout();
+//                    return;
+//                }
                 if (itemClass == null || !Form.class.isAssignableFrom(itemClass)) {
                     action.consume();
                     return;
