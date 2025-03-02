@@ -25,11 +25,12 @@ import java.util.List;
 import java.util.function.Function;
 
 @SystemForm(name = "Convenio", description = "Tabela de Convênios")
-public class FormConvenio extends FormTableGeneric {
+public class ListaConvenio extends FormTableGeneric {
     List<Convenio> lista;
     private ConvenioService convenioService;
     private ConvenioForm convenioForm;
     private Convenio convenio;
+    private JTable tabela;
 
     @Override
     protected void init() {
@@ -47,49 +48,55 @@ public class FormConvenio extends FormTableGeneric {
     }
 
     @Override
+    protected void adicionarActionListener() {
+        this.getBotaoCriar().addActionListener(this::dialogAdicionar);
+        this.getBotaoEditar().addActionListener(this::dialogEditar);
+    }
+
+    @Override
     protected void criarTabela() {
         JTabbedPane tabb = new JTabbedPane();
         tabb.putClientProperty(FlatClientProperties.STYLE, "" + "tabType:card");
 
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
-        String[] colunas = {"Título", "Descrição"};
+        String[] colunas = {"Código", "Descrição"};
 
         List<Function<Convenio, Object>> acessadores = Arrays.asList(
-                Convenio::getNome,
+                Convenio::getCodigo,
                 Convenio::getNome
         );
 
-        TabelaGenerica<Convenio> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
+        TabelaGenerica<Convenio> convenios = new TabelaGenerica<>(colunas, acessadores, this.lista);
 
-        JTable table = new JTable(tabela);
-        JScrollPane scrollPane = new JScrollPane(table);
+        this.tabela = new JTable(convenios);
+        JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        table.getColumnModel().getColumn(0).setMaxWidth(150);
-        table.getColumnModel().getColumn(1).setPreferredWidth(200);
+        this.tabela.getColumnModel().getColumn(0);
+        this.tabela.getColumnModel().getColumn(1);
 
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(table));
+        this.tabela.getTableHeader().setReorderingAllowed(false);
+        this.tabela.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(this.tabela));
 
-        table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
+        this.tabela.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(this.tabela) {
             @Override
             protected int getAlignment(int column) {
                 if (column == 1)
                     return SwingConstants.LEADING;
 
-                return SwingConstants.LEFT;
+                return SwingConstants.CENTER;
             }
         });
 
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
+                "arc:40;" +
                 "background:$Table.background;");
-        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
+        this.tabela.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
                 "hoverBackground:null;" +
                 "pressedBackground:null;" +
                 "separatorColor:$TableHeader.background;");
-        table.putClientProperty(FlatClientProperties.STYLE, "" +
+        this.tabela.putClientProperty(FlatClientProperties.STYLE, "" +
                 "rowHeight:70;" +
                 "showHorizontalLines:true;" +
                 "intercellSpacing:0,1;" +
@@ -114,11 +121,11 @@ public class FormConvenio extends FormTableGeneric {
     }
 
     @Override
-    protected void adicionarActionListener() {
-        this.getBotaoCriar().addActionListener(this::showModal);
+    protected void pesquisar(String texto) {
+        System.out.println(texto);
     }
 
-    private void showModal(ActionEvent e) {
+    private void dialogAdicionar(ActionEvent e) {
         if (this.convenioForm == null)
             this.convenioForm = new ConvenioForm();
 
@@ -135,6 +142,7 @@ public class FormConvenio extends FormTableGeneric {
                 (controller, action) -> {
                     if (action == SimpleModalBorder.YES_NO_OPTION) {
                         this.salvar();
+                        this.convenioForm = new ConvenioForm();
                     }
                 }), option);
     }
@@ -145,11 +153,38 @@ public class FormConvenio extends FormTableGeneric {
 
         this.convenio.setCodigo(Long.valueOf(this.convenioForm.getRegistroConvenio().getText()));
         this.convenio.setCodconvenio(Long.valueOf(this.convenioForm.getCodImportacao().getText()));
+        this.convenio.setNome(this.convenioForm.getNomeConvenio().getText());
+        this.convenio.setObservacoes(this.convenioForm.getObservacao().getText());
         this.convenio.setDatacadastro(this.convenioForm.getCampoDataFormatada().getDatePicker().getSelectedDate());
         this.convenio.setAtivo(this.convenioForm.getAtivo().isSelected());
 
-        System.out.println(this.convenio.toString());
-//        this.convenioService.salvar(this.convenio);
+        this.convenioService.salvar(this.convenio);
+        this.convenio = new Convenio();
+    }
+
+    private void dialogEditar(ActionEvent event) {
+        if (this.convenioForm == null)
+            this.convenioForm = new ConvenioForm();
+
+        Long codigo = this.selecionarLinha();
+
+        if (codigo == null)
+            return;
+
+        this.convenio = this.convenioService.buscarId(codigo);
+        this.convenioForm.getNomeConvenio().setText(this.convenio.getNome());
+        this.convenioForm.getRegistroConvenio().setText(this.convenio.getCodigo() + "");
+        this.convenioForm.getCodImportacao().setText(this.convenio.getCodconvenio() + "");
+        this.convenioForm.getObservacao().setText(this.convenio.getObservacoes());
+//        this.convenioForm.getCampoDataFormatada().getDatePicker().setSelectedDate(this.convenio.getDatacadastro());
+        this.convenioForm.getAtivo().setText(String.valueOf(this.convenio.isAtivo()));
+
+        this.dialogAdicionar(null);
+    }
+
+    private Long selecionarLinha() {
+        int selectedRow = this.tabela.getSelectedRow();
+        return selectedRow == -1 ? null : (Long) this.tabela.getValueAt(selectedRow, 0);
     }
 
 }

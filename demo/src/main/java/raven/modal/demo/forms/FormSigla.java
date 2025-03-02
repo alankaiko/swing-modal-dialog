@@ -112,6 +112,11 @@ public class FormSigla extends FormTableGeneric {
     }
 
     @Override
+    protected void pesquisar(String texto) {
+
+    }
+
+    @Override
     protected void adicionarActionListener() {
         this.getBotaoCriar().addActionListener(this::showModal);
     }

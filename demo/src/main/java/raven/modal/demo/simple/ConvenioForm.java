@@ -63,47 +63,24 @@ public class ConvenioForm extends FormModalDialogGeneric {
         return registroConvenio;
     }
 
-    public void setRegistroConvenio(JTextField registroConvenio) {
-        this.registroConvenio = registroConvenio;
-    }
-
     public JTextField getNomeConvenio() {
         return nomeConvenio;
-    }
-
-    public void setNomeConvenio(JTextField nomeConvenio) {
-        this.nomeConvenio = nomeConvenio;
     }
 
     public JTextField getCodImportacao() {
         return codImportacao;
     }
 
-    public void setCodImportacao(JTextField codImportacao) {
-        this.codImportacao = codImportacao;
-    }
-
     public JCheckBox getAtivo() {
         return ativo;
-    }
-
-    public void setAtivo(JCheckBox ativo) {
-        this.ativo = ativo;
     }
 
     public JTextArea getObservacao() {
         return observacao;
     }
 
-    public void setObservacao(JTextArea observacao) {
-        this.observacao = observacao;
-    }
-
     public CampoDataFormatada getCampoDataFormatada() {
         return campoDataFormatada;
     }
 
-    public void setCampoDataFormatada(CampoDataFormatada campoDataFormatada) {
-        this.campoDataFormatada = campoDataFormatada;
-    }
 }

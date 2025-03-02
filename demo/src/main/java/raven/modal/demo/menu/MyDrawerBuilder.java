@@ -76,7 +76,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         MenuItem items[] = new MenuItem[]{
                 new Item.Label("MAIN"),
                 new Item("Dashboard", "dashboard.svg", FormDashboard.class),
-                new Item("Convênios", "dashboard.svg", FormConvenio.class),
+                new Item("Convênios", "dashboard.svg", ListaConvenio.class),
                 new Item("Exames", "dashboard.svg", FormExame.class),
                 new Item("Paciente", "dashboard.svg", FormPaciente.class),
                 new Item("Procedimentos Médico", "dashboard.svg", FormProcedimentoMedico.class),
@@ -93,33 +93,6 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                         .subMenu("Date Time", FormDateTime.class)
                         .subMenu("Avatar Icon", FormAvatarIcon.class)
                         .subMenu("Slide Pane", FormSlidePane.class),
-                new Item("Email", "email.svg")
-                        .subMenu("Inbox")
-                        .subMenu(
-                                new Item("Group Read")
-                                        .subMenu("Read 1")
-                                        .subMenu("Read 2")
-                                        .subMenu(
-                                                new Item("Group Item")
-                                                        .subMenu("Item 1")
-                                                        .subMenu("Item 2")
-                                                        .subMenu("Item 3")
-                                                        .subMenu("Item 4")
-                                                        .subMenu("Item 5")
-                                                        .subMenu("Item 6")
-                                        )
-                                        .subMenu("Read 3")
-                                        .subMenu("Read 4")
-                                        .subMenu("Read 5")
-                        )
-                        .subMenu("Compost"),
-                new Item("Chat", "chat.svg"),
-                new Item("Calendar", "calendar.svg"),
-                new Item.Label("OTHER"),
-                new Item("Plugin", "plugin.svg")
-                        .subMenu("Plugin 1")
-                        .subMenu("Plugin 2")
-                        .subMenu("Plugin 3"),
                 new Item("Setting", "setting.svg", FormSetting.class),
                 new Item("About", "about.svg"),
                 new Item("Logout", "logout.svg")

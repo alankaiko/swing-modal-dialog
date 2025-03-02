@@ -6,10 +6,15 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public abstract class FormTableGeneric extends Form {
 
-    private JButton botaoCriar, botaoEditar, botaoDeletar;
+    private JButton botaoCriar, botaoEditar;
+    private JTextField buscar = new JTextField();
 
     public FormTableGeneric() {
         this.carregarObjetos();
@@ -19,9 +24,11 @@ public abstract class FormTableGeneric extends Form {
 
     protected abstract void carregarObjetos();
 
+    protected abstract void adicionarActionListener();
+
     protected abstract void criarTabela();
 
-    protected abstract void adicionarActionListener();
+    protected abstract void pesquisar(String texto);
 
     protected JPanel faixaTitulo(String titulo, String subTitulo, int level) {
         JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
@@ -47,22 +54,27 @@ public abstract class FormTableGeneric extends Form {
     protected Component createHeaderAction() {
         JPanel panel = new JPanel(new MigLayout("insets 5 20 5 20", "[fill,230]push[][]"));
 
-        JTextField txtSearch = new JTextField();
-        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Buscar...");
-        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("raven/modal/demo/icons/search.svg", 0.4f));
-        txtSearch.setPreferredSize(new Dimension(200, 30));
+        this.buscar.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Buscar...");
+        this.buscar.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("raven/modal/demo/icons/search.svg", 0.4f));
+        this.buscar.setPreferredSize(new Dimension(200, 30));
         this.botaoCriar = new JButton("Adicionar");
         this.botaoCriar.setPreferredSize(new Dimension(130, 30));
         this.botaoEditar = new JButton("Editar");
         this.botaoEditar.setPreferredSize(new Dimension(130, 30));
-        this.botaoDeletar = new JButton("Deletar");
-        this.botaoDeletar.setPreferredSize(new Dimension(130, 30));
 
-        panel.add(txtSearch);
+        panel.add(this.buscar);
         panel.add(this.botaoCriar);
         panel.add(this.botaoEditar);
-        panel.add(this.botaoDeletar);
         panel.putClientProperty(FlatClientProperties.STYLE, "" + "background:null;");
+
+        this.buscar.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    pesquisar(buscar.getText());
+                }
+            }
+        });
 
         return panel;
     }
@@ -75,7 +87,7 @@ public abstract class FormTableGeneric extends Form {
         return botaoEditar;
     }
 
-    public JButton getBotaoDeletar() {
-        return botaoDeletar;
+    public JTextField getBuscar() {
+        return buscar;
     }
 }
