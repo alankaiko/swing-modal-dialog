@@ -10,7 +10,7 @@ import raven.modal.demo.model.ProcedimentoMedico;
 import raven.modal.demo.model.dto.ProcedimentoMedicoDTO;
 import raven.modal.demo.service.ProcedimentoMedicoService;
 import raven.modal.demo.service.impl.ProcedimentoMedicoServiceImpl;
-import raven.modal.demo.simple.SimpleInputForms;
+import raven.modal.demo.simple.ProcedimentoMedicoForm;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.demo.utils.table.TableHeaderAlignment;
@@ -25,9 +25,13 @@ import java.util.List;
 import java.util.function.Function;
 
 @SystemForm(name = "Procedimentos Médico", description = "Tabela de Procedimentos Médico")
-public class FormProcedimentoMedico extends FormTableGeneric {
-    List<ProcedimentoMedico> lista;
+public class ListaProcedimentoMedico extends FormTableGeneric {
+    private JTable tabela;
     private ProcedimentoMedicoService procedimentoMedicoService;
+    private ProcedimentoMedicoForm procedimentoMedicoForm;
+    private ProcedimentoMedico procedimentoMedico;
+    List<ProcedimentoMedico> listaProcedimentoMedicos;
+    TabelaGenerica<ProcedimentoMedico> tabelaGenerica;
 
     @Override
     protected void init() {
@@ -41,7 +45,13 @@ public class FormProcedimentoMedico extends FormTableGeneric {
         filtro.setItensPorPagina(20);
 
         this.procedimentoMedicoService = new ProcedimentoMedicoServiceImpl();
-        this.lista = this.procedimentoMedicoService.filtrando(filtro);
+        this.listaProcedimentoMedicos = this.procedimentoMedicoService.filtrando(filtro);
+    }
+
+    @Override
+    protected void adicionarActionListener() {
+        this.getBotaoCriar().addActionListener(this::dialogAdicionar);
+        this.getBotaoEditar().addActionListener(this::dialogEditar);
     }
 
     @Override
@@ -50,44 +60,44 @@ public class FormProcedimentoMedico extends FormTableGeneric {
         tabb.putClientProperty(FlatClientProperties.STYLE, "" + "tabType:card");
 
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
-        String[] colunas = {"Título", "Descrição"};
+        String[] colunas = {"Código", "Descrição"};
 
         List<Function<ProcedimentoMedico, Object>> acessadores = Arrays.asList(
-                ProcedimentoMedico::getTitulo,
+                ProcedimentoMedico::getCodigo,
                 ProcedimentoMedico::getTitulo
         );
 
-        TabelaGenerica<ProcedimentoMedico> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
+        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaProcedimentoMedicos);
 
-        JTable table = new JTable(tabela);
-        JScrollPane scrollPane = new JScrollPane(table);
+        this.tabela = new JTable(this.tabelaGenerica);
+        JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        table.getColumnModel().getColumn(0).setMaxWidth(150);
-        table.getColumnModel().getColumn(1).setPreferredWidth(200);
+        this.tabela.getColumnModel().getColumn(0);
+        this.tabela.getColumnModel().getColumn(1);
 
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(table));
+        this.tabela.getTableHeader().setReorderingAllowed(false);
+        this.tabela.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(this.tabela));
 
-        table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
+        this.tabela.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(this.tabela) {
             @Override
             protected int getAlignment(int column) {
                 if (column == 1)
                     return SwingConstants.LEADING;
 
-                return SwingConstants.LEFT;
+                return SwingConstants.CENTER;
             }
         });
 
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
+                "arc:40;" +
                 "background:$Table.background;");
-        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
+        this.tabela.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
                 "hoverBackground:null;" +
                 "pressedBackground:null;" +
                 "separatorColor:$TableHeader.background;");
-        table.putClientProperty(FlatClientProperties.STYLE, "" +
+        this.tabela.putClientProperty(FlatClientProperties.STYLE, "" +
                 "rowHeight:70;" +
                 "showHorizontalLines:true;" +
                 "intercellSpacing:0,1;" +
@@ -113,24 +123,66 @@ public class FormProcedimentoMedico extends FormTableGeneric {
 
     @Override
     protected void pesquisar(String texto) {
+        ProcedimentoMedicoDTO filtro = new ProcedimentoMedicoDTO();
+        filtro.setItensPorPagina(20);
+        filtro.setNome(texto);
 
+        this.procedimentoMedicoService = new ProcedimentoMedicoServiceImpl();
+        this.listaProcedimentoMedicos = this.procedimentoMedicoService.filtrando(filtro);
+
+        this.tabelaGenerica.atualizarDados(this.listaProcedimentoMedicos);
+        this.tabela.repaint();
     }
 
-    @Override
-    protected void adicionarActionListener() {
-        this.getBotaoCriar().addActionListener(this::showModal);
-    }
 
-    private void showModal(ActionEvent e) {
+    private void dialogAdicionar(ActionEvent e) {
+        if (this.procedimentoMedicoForm == null)
+            this.procedimentoMedicoForm = new ProcedimentoMedicoForm();
+
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
-                .setLocation(Location.TRAILING, Location.TOP)
+                .setLocation(Location.CENTER, Location.CENTER)
+                .setSize(900, 460)
                 .setAnimateDistance(0.7f, 0);
-        ModalDialog.showModal(this, new SimpleModalBorder(
-                new SimpleInputForms(), "Create", SimpleModalBorder.YES_NO_OPTION,
-                (controller, action) -> {
 
+        ModalDialog.showModal(this, new SimpleModalBorder(
+                this.procedimentoMedicoForm,
+                "Cadastro de Procedimento Médico",
+                SimpleModalBorder.YES_NO_OPTION,
+                (controller, action) -> {
+                    if (action == SimpleModalBorder.YES_NO_OPTION) {
+                        this.salvar();
+                        this.procedimentoMedicoForm = new ProcedimentoMedicoForm();
+                    }
                 }), option);
     }
 
+    private void salvar() {
+        if (this.procedimentoMedico == null)
+            this.procedimentoMedico = new ProcedimentoMedico();
+
+        this.procedimentoMedico.setCodigo(Long.valueOf(this.procedimentoMedicoForm.getRegistro().getText()));
+
+        this.procedimentoMedicoService.salvar(this.procedimentoMedico);
+        this.procedimentoMedico = new ProcedimentoMedico();
+    }
+
+    private void dialogEditar(ActionEvent event) {
+        if (this.procedimentoMedicoForm == null)
+            this.procedimentoMedicoForm = new ProcedimentoMedicoForm();
+
+        Long codigo = this.selecionarLinha();
+
+        if (codigo == null)
+            return;
+
+        this.procedimentoMedico = this.procedimentoMedicoService.buscarId(codigo);
+
+        this.dialogAdicionar(null);
+    }
+
+    private Long selecionarLinha() {
+        int selectedRow = this.tabela.getSelectedRow();
+        return selectedRow == -1 ? null : (Long) this.tabela.getValueAt(selectedRow, 0);
+    }
 }

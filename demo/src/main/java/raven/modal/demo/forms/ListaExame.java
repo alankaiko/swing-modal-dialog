@@ -10,7 +10,7 @@ import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.model.dto.ExameDTO;
 import raven.modal.demo.service.ExameService;
 import raven.modal.demo.service.impl.ExameServiceImpl;
-import raven.modal.demo.simple.SimpleInputForms;
+import raven.modal.demo.simple.ExameForm;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.demo.utils.table.TableHeaderAlignment;
@@ -25,9 +25,13 @@ import java.util.List;
 import java.util.function.Function;
 
 @SystemForm(name = "Exames", description = "Tabela de Exames")
-public class FormExame extends FormTableGeneric {
-    List<Exame> lista;
+public class ListaExame extends FormTableGeneric {
+    private JTable tabela;
     private ExameService exameService;
+    private ExameForm exameForm;
+    private Exame exame;
+    List<Exame> listaExame;
+    TabelaGenerica<Exame> tabelaGenerica;
 
     @Override
     protected void init() {
@@ -41,7 +45,13 @@ public class FormExame extends FormTableGeneric {
         filtro.setItensPorPagina(20);
 
         this.exameService = new ExameServiceImpl();
-        this.lista = this.exameService.filtrando(filtro);
+        this.listaExame = this.exameService.filtrando(filtro);
+    }
+
+    @Override
+    protected void adicionarActionListener() {
+        this.getBotaoCriar().addActionListener(this::dialogAdicionar);
+        this.getBotaoEditar().addActionListener(this::dialogEditar);
     }
 
     @Override
@@ -50,44 +60,44 @@ public class FormExame extends FormTableGeneric {
         tabb.putClientProperty(FlatClientProperties.STYLE, "" + "tabType:card");
 
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
-        String[] colunas = {"Título", "Descrição"};
+        String[] colunas = {"Código", "Título"};
 
         List<Function<Exame, Object>> acessadores = Arrays.asList(
-                Exame::getTitulo,
-                Exame::getDescricao
+                Exame::getCodigo,
+                Exame::getTitulo
         );
 
-        TabelaGenerica<Exame> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
+        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaExame);
 
-        JTable table = new JTable(tabela);
-        JScrollPane scrollPane = new JScrollPane(table);
+        this.tabela = new JTable(this.tabelaGenerica);
+        JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        table.getColumnModel().getColumn(0).setMaxWidth(150);
-        table.getColumnModel().getColumn(1).setPreferredWidth(200);
+        this.tabela.getColumnModel().getColumn(0);
+        this.tabela.getColumnModel().getColumn(1);
 
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(table));
+        this.tabela.getTableHeader().setReorderingAllowed(false);
+        this.tabela.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(this.tabela));
 
-        table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
+        this.tabela.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(this.tabela) {
             @Override
             protected int getAlignment(int column) {
                 if (column == 1)
                     return SwingConstants.LEADING;
 
-                return SwingConstants.LEFT;
+                return SwingConstants.CENTER;
             }
         });
 
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
+                "arc:40;" +
                 "background:$Table.background;");
-        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
+        this.tabela.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
                 "hoverBackground:null;" +
                 "pressedBackground:null;" +
                 "separatorColor:$TableHeader.background;");
-        table.putClientProperty(FlatClientProperties.STYLE, "" +
+        this.tabela.putClientProperty(FlatClientProperties.STYLE, "" +
                 "rowHeight:70;" +
                 "showHorizontalLines:true;" +
                 "intercellSpacing:0,1;" +
@@ -113,24 +123,66 @@ public class FormExame extends FormTableGeneric {
 
     @Override
     protected void pesquisar(String texto) {
+        ExameDTO filtro = new ExameDTO();
+        filtro.setItensPorPagina(20);
+        filtro.setTitulo(texto);
 
+        this.exameService = new ExameServiceImpl();
+        this.listaExame = this.exameService.filtrando(filtro);
+
+        this.tabelaGenerica.atualizarDados(this.listaExame);
+        this.tabela.repaint();
     }
 
-    @Override
-    protected void adicionarActionListener() {
-        this.getBotaoCriar().addActionListener(this::showModal);
-    }
 
-    private void showModal(ActionEvent e) {
+    private void dialogAdicionar(ActionEvent e) {
+        if (this.exameForm == null)
+            this.exameForm = new ExameForm();
+
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
-                .setLocation(Location.TRAILING, Location.TOP)
+                .setLocation(Location.CENTER, Location.CENTER)
+                .setSize(900, 460)
                 .setAnimateDistance(0.7f, 0);
-        ModalDialog.showModal(this, new SimpleModalBorder(
-                new SimpleInputForms(), "Create", SimpleModalBorder.YES_NO_OPTION,
-                (controller, action) -> {
 
+        ModalDialog.showModal(this, new SimpleModalBorder(
+                this.exameForm,
+                "Cadastro de Exame",
+                SimpleModalBorder.YES_NO_OPTION,
+                (controller, action) -> {
+                    if (action == SimpleModalBorder.YES_NO_OPTION) {
+                        this.salvar();
+                        this.exameForm = new ExameForm();
+                    }
                 }), option);
     }
 
+    private void salvar() {
+        if (this.exame == null)
+            this.exame = new Exame();
+
+        this.exame.setCodigo(Long.valueOf(this.exameForm.getRegistro().getText()));
+
+        this.exameService.salvar(this.exame);
+        this.exame = new Exame();
+    }
+
+    private void dialogEditar(ActionEvent event) {
+        if (this.exameForm == null)
+            this.exameForm = new ExameForm();
+
+        Long codigo = this.selecionarLinha();
+
+        if (codigo == null)
+            return;
+
+        this.exame = this.exameService.buscarId(codigo);
+
+        this.dialogAdicionar(null);
+    }
+
+    private Long selecionarLinha() {
+        int selectedRow = this.tabela.getSelectedRow();
+        return selectedRow == -1 ? null : (Long) this.tabela.getValueAt(selectedRow, 0);
+    }
 }

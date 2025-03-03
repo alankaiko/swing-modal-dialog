@@ -6,8 +6,6 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -85,9 +83,5 @@ public abstract class FormTableGeneric extends Form {
 
     public JButton getBotaoEditar() {
         return botaoEditar;
-    }
-
-    public JTextField getBuscar() {
-        return buscar;
     }
 }

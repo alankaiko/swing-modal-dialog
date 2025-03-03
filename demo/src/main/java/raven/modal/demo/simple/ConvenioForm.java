@@ -11,7 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class ConvenioForm extends FormModalDialogGeneric {
-    JTextField registroConvenio = new JTextField();
+    JTextField registro = new JTextField();
     JTextField nomeConvenio = new JTextField();
     JTextField codImportacao = new JTextField();
     JCheckBox ativo = new JCheckBox();
@@ -26,7 +26,7 @@ public class ConvenioForm extends FormModalDialogGeneric {
         this.setLayout(new MigLayout("fillx,wrap,insets 5 30 5 30", "[grow][grow][grow][grow]", ""));
 
         this.add(new JLabel("Registro"), "cell 0 0");
-        this.add(this.registroConvenio, "cell 0 1,growx");
+        this.add(this.registro, "cell 0 1,growx");
 
         this.add(new JLabel("Cód Importação"), "cell 1 0");
         this.add(this.codImportacao, "cell 1 1,growx");
@@ -59,8 +59,8 @@ public class ConvenioForm extends FormModalDialogGeneric {
         });
     }
 
-    public JTextField getRegistroConvenio() {
-        return registroConvenio;
+    public JTextField getRegistro() {
+        return registro;
     }
 
     public JTextField getNomeConvenio() {

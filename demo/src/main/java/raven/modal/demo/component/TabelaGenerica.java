@@ -59,4 +59,9 @@ public class TabelaGenerica<T> extends AbstractTableModel {
         this.linhas.clear();
         this.fireTableDataChanged();
     }
+
+    public void atualizarDados(List<T> dados) {
+        this.linhas = new ArrayList<>(dados);
+    }
+
 }

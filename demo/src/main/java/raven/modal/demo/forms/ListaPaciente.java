@@ -10,7 +10,7 @@ import raven.modal.demo.model.Paciente;
 import raven.modal.demo.model.dto.PacienteDTO;
 import raven.modal.demo.service.PacienteService;
 import raven.modal.demo.service.impl.PacienteServiceImpl;
-import raven.modal.demo.simple.SimpleInputForms;
+import raven.modal.demo.simple.PacienteForm;
 import raven.modal.demo.system.FormTableGeneric;
 import raven.modal.demo.utils.SystemForm;
 import raven.modal.demo.utils.table.TableHeaderAlignment;
@@ -25,9 +25,13 @@ import java.util.List;
 import java.util.function.Function;
 
 @SystemForm(name = "Pacientes", description = "Tabela de Pacientes")
-public class FormPaciente extends FormTableGeneric {
-    List<Paciente> lista;
+public class ListaPaciente extends FormTableGeneric {
+    private JTable tabela;
     private PacienteService pacienteService;
+    private PacienteForm pacienteForm;
+    private Paciente paciente;
+    List<Paciente> listaPacientes;
+    TabelaGenerica<Paciente> tabelaGenerica;
 
     @Override
     protected void init() {
@@ -41,7 +45,13 @@ public class FormPaciente extends FormTableGeneric {
         filtro.setItensPorPagina(20);
 
         this.pacienteService = new PacienteServiceImpl();
-        this.lista = this.pacienteService.filtrando(filtro);
+        this.listaPacientes = this.pacienteService.filtrando(filtro);
+    }
+
+    @Override
+    protected void adicionarActionListener() {
+        this.getBotaoCriar().addActionListener(this::dialogAdicionar);
+        this.getBotaoEditar().addActionListener(this::dialogEditar);
     }
 
     @Override
@@ -50,44 +60,44 @@ public class FormPaciente extends FormTableGeneric {
         tabb.putClientProperty(FlatClientProperties.STYLE, "" + "tabType:card");
 
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
-        String[] colunas = {"Título", "Descrição"};
+        String[] colunas = {"Código", "Descrição"};
 
         List<Function<Paciente, Object>> acessadores = Arrays.asList(
-                Paciente::getNome,
+                Paciente::getCodigo,
                 Paciente::getNome
         );
 
-        TabelaGenerica<Paciente> tabela = new TabelaGenerica<>(colunas, acessadores, this.lista);
+        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaPacientes);
 
-        JTable table = new JTable(tabela);
-        JScrollPane scrollPane = new JScrollPane(table);
+        this.tabela = new JTable(this.tabelaGenerica);
+        JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        table.getColumnModel().getColumn(0).setMaxWidth(150);
-        table.getColumnModel().getColumn(1).setPreferredWidth(200);
+        this.tabela.getColumnModel().getColumn(0);
+        this.tabela.getColumnModel().getColumn(1);
 
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(table));
+        this.tabela.getTableHeader().setReorderingAllowed(false);
+        this.tabela.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(this.tabela));
 
-        table.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(table) {
+        this.tabela.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(this.tabela) {
             @Override
             protected int getAlignment(int column) {
                 if (column == 1)
                     return SwingConstants.LEADING;
 
-                return SwingConstants.LEFT;
+                return SwingConstants.CENTER;
             }
         });
 
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:20;" +
+                "arc:40;" +
                 "background:$Table.background;");
-        table.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
+        this.tabela.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
                 "height:30;" +
                 "hoverBackground:null;" +
                 "pressedBackground:null;" +
                 "separatorColor:$TableHeader.background;");
-        table.putClientProperty(FlatClientProperties.STYLE, "" +
+        this.tabela.putClientProperty(FlatClientProperties.STYLE, "" +
                 "rowHeight:70;" +
                 "showHorizontalLines:true;" +
                 "intercellSpacing:0,1;" +
@@ -113,24 +123,66 @@ public class FormPaciente extends FormTableGeneric {
 
     @Override
     protected void pesquisar(String texto) {
+        PacienteDTO filtro = new PacienteDTO();
+        filtro.setItensPorPagina(20);
+        filtro.setNome(texto);
 
+        this.pacienteService = new PacienteServiceImpl();
+        this.listaPacientes = this.pacienteService.filtrando(filtro);
+
+        this.tabelaGenerica.atualizarDados(this.listaPacientes);
+        this.tabela.repaint();
     }
 
-    @Override
-    protected void adicionarActionListener() {
-        this.getBotaoCriar().addActionListener(this::showModal);
-    }
 
-    private void showModal(ActionEvent e) {
+    private void dialogAdicionar(ActionEvent e) {
+        if (this.pacienteForm == null)
+            this.pacienteForm = new PacienteForm();
+
         Option option = ModalDialog.createOption();
         option.getLayoutOption().setSize(-1, 1f)
-                .setLocation(Location.TRAILING, Location.TOP)
+                .setLocation(Location.CENTER, Location.CENTER)
+                .setSize(900, 460)
                 .setAnimateDistance(0.7f, 0);
-        ModalDialog.showModal(this, new SimpleModalBorder(
-                new SimpleInputForms(), "Create", SimpleModalBorder.YES_NO_OPTION,
-                (controller, action) -> {
 
+        ModalDialog.showModal(this, new SimpleModalBorder(
+                this.pacienteForm,
+                "Cadastro de Paciente",
+                SimpleModalBorder.YES_NO_OPTION,
+                (controller, action) -> {
+                    if (action == SimpleModalBorder.YES_NO_OPTION) {
+                        this.salvar();
+                        this.pacienteForm = new PacienteForm();
+                    }
                 }), option);
     }
 
+    private void salvar() {
+        if (this.paciente == null)
+            this.paciente = new Paciente();
+
+        this.paciente.setCodigo(Long.valueOf(this.pacienteForm.getRegistro().getText()));
+
+        this.pacienteService.salvar(this.paciente);
+        this.paciente = new Paciente();
+    }
+
+    private void dialogEditar(ActionEvent event) {
+        if (this.pacienteForm == null)
+            this.pacienteForm = new PacienteForm();
+
+        Long codigo = this.selecionarLinha();
+
+        if (codigo == null)
+            return;
+
+        this.paciente = this.pacienteService.buscarId(codigo);
+
+        this.dialogAdicionar(null);
+    }
+
+    private Long selecionarLinha() {
+        int selectedRow = this.tabela.getSelectedRow();
+        return selectedRow == -1 ? null : (Long) this.tabela.getValueAt(selectedRow, 0);
+    }
 }

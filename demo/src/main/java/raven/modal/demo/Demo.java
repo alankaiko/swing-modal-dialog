@@ -21,12 +21,13 @@ public class Demo extends JFrame {
     }
 
     private void init() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.getRootPane().putClientProperty(FlatClientProperties.FULL_WINDOW_CONTENT, true);
         Drawer.installDrawer(this, new MyDrawerBuilder());
         FormManager.install(this);
-        setSize(new Dimension(1366, 768));
-        setLocationRelativeTo(null);
+        this.setSize(new Dimension(1366, 768));
+        this.setLocationRelativeTo(null);
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         EntityManagerFactorySingleton.getEntityManager();
     }
 

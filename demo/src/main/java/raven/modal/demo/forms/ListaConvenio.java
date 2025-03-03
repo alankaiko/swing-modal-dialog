@@ -26,11 +26,12 @@ import java.util.function.Function;
 
 @SystemForm(name = "Convenio", description = "Tabela de Convênios")
 public class ListaConvenio extends FormTableGeneric {
-    List<Convenio> lista;
+    private JTable tabela;
     private ConvenioService convenioService;
     private ConvenioForm convenioForm;
     private Convenio convenio;
-    private JTable tabela;
+    List<Convenio> listaConvenios;
+    TabelaGenerica<Convenio> tabelaGenerica;
 
     @Override
     protected void init() {
@@ -44,7 +45,7 @@ public class ListaConvenio extends FormTableGeneric {
         filtro.setItensPorPagina(20);
 
         this.convenioService = new ConvenioServiceImpl();
-        this.lista = this.convenioService.filtrando(filtro);
+        this.listaConvenios = this.convenioService.filtrando(filtro);
     }
 
     @Override
@@ -66,9 +67,9 @@ public class ListaConvenio extends FormTableGeneric {
                 Convenio::getNome
         );
 
-        TabelaGenerica<Convenio> convenios = new TabelaGenerica<>(colunas, acessadores, this.lista);
+        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaConvenios);
 
-        this.tabela = new JTable(convenios);
+        this.tabela = new JTable(this.tabelaGenerica);
         JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
@@ -122,8 +123,17 @@ public class ListaConvenio extends FormTableGeneric {
 
     @Override
     protected void pesquisar(String texto) {
-        System.out.println(texto);
+        ConvenioDTO filtro = new ConvenioDTO();
+        filtro.setItensPorPagina(20);
+        filtro.setNome(texto);
+
+        this.convenioService = new ConvenioServiceImpl();
+        this.listaConvenios = this.convenioService.filtrando(filtro);
+
+        this.tabelaGenerica.atualizarDados(this.listaConvenios);
+        this.tabela.repaint();
     }
+
 
     private void dialogAdicionar(ActionEvent e) {
         if (this.convenioForm == null)
@@ -151,7 +161,7 @@ public class ListaConvenio extends FormTableGeneric {
         if (this.convenio == null)
             this.convenio = new Convenio();
 
-        this.convenio.setCodigo(Long.valueOf(this.convenioForm.getRegistroConvenio().getText()));
+        this.convenio.setCodigo(Long.valueOf(this.convenioForm.getRegistro().getText()));
         this.convenio.setCodconvenio(Long.valueOf(this.convenioForm.getCodImportacao().getText()));
         this.convenio.setNome(this.convenioForm.getNomeConvenio().getText());
         this.convenio.setObservacoes(this.convenioForm.getObservacao().getText());
@@ -173,7 +183,7 @@ public class ListaConvenio extends FormTableGeneric {
 
         this.convenio = this.convenioService.buscarId(codigo);
         this.convenioForm.getNomeConvenio().setText(this.convenio.getNome());
-        this.convenioForm.getRegistroConvenio().setText(this.convenio.getCodigo() + "");
+        this.convenioForm.getRegistro().setText(this.convenio.getCodigo() + "");
         this.convenioForm.getCodImportacao().setText(this.convenio.getCodconvenio() + "");
         this.convenioForm.getObservacao().setText(this.convenio.getObservacoes());
 //        this.convenioForm.getCampoDataFormatada().getDatePicker().setSelectedDate(this.convenio.getDatacadastro());
@@ -186,5 +196,4 @@ public class ListaConvenio extends FormTableGeneric {
         int selectedRow = this.tabela.getSelectedRow();
         return selectedRow == -1 ? null : (Long) this.tabela.getValueAt(selectedRow, 0);
     }
-
 }

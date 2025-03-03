@@ -77,11 +77,11 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item.Label("MAIN"),
                 new Item("Dashboard", "dashboard.svg", FormDashboard.class),
                 new Item("Convênios", "dashboard.svg", ListaConvenio.class),
-                new Item("Exames", "dashboard.svg", FormExame.class),
-                new Item("Paciente", "dashboard.svg", FormPaciente.class),
-                new Item("Procedimentos Médico", "dashboard.svg", FormProcedimentoMedico.class),
-                new Item("Médicos", "dashboard.svg", FormProfissional.class),
-                new Item("Siglas", "dashboard.svg", FormSigla.class),
+                new Item("Exames", "dashboard.svg", ListaExame.class),
+                new Item("Paciente", "dashboard.svg", ListaPaciente.class),
+                new Item("Procedimentos Médico", "dashboard.svg", ListaProcedimentoMedico.class),
+                new Item("Médicos", "dashboard.svg", ListaProfissional.class),
+                new Item("Siglas", "dashboard.svg", ListaSigla.class),
                 new Item.Label("SWING UI"),
                 new Item("Forms", "forms.svg")
                         .subMenu("Input", FormInput.class)
