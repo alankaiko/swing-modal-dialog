@@ -83,6 +83,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item("Procedimentos Médico", "dashboard.svg", ListaProcedimentoMedico.class),
                 new Item("Médicos", "dashboard.svg", ListaProfissional.class),
                 new Item("Siglas", "dashboard.svg", ListaSigla.class),
+                new Item("Captura", "dashboard.svg", FormCaptura.class),
                 new Item.Label("SWING UI"),
                 new Item("Forms", "forms.svg")
                         .subMenu("Input", FormInput.class)

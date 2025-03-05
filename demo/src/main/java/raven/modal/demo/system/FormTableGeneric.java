@@ -28,20 +28,6 @@ public abstract class FormTableGeneric extends Form {
 
     protected abstract void pesquisar(String texto);
 
-    protected JPanel faixaTitulo(String titulo, String subTitulo, int level) {
-        JPanel panel = new JPanel(new MigLayout("fillx,wrap", "[fill]"));
-        JLabel lbTitle = new JLabel(titulo);
-        JTextPane text = new JTextPane();
-        text.setText(subTitulo);
-        text.setEditable(false);
-        text.setBorder(BorderFactory.createEmptyBorder());
-        lbTitle.putClientProperty(FlatClientProperties.STYLE, "" + "font:bold +" + (4 - level));
-        panel.add(lbTitle);
-        panel.add(text, "width 500");
-
-        return panel;
-    }
-
     protected Component createBorder(Component component) {
         JPanel panel = new JPanel(new MigLayout("fill,insets 7 0 7 0", "[fill]", "[fill]"));
         panel.add(component);
