@@ -34,7 +34,6 @@ public class TabelaGenerica<T> extends AbstractTableModel {
         return value == null ? String.class : value.getClass();
     }
 
-
     @Override
     public int getRowCount() {
         return this.linhas.size();

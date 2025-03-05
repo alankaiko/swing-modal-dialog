@@ -73,9 +73,6 @@ public class ListaExame extends FormTableGeneric {
         JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        this.tabela.getColumnModel().getColumn(0);
-        this.tabela.getColumnModel().getColumn(1);
-
         this.tabela.getTableHeader().setReorderingAllowed(false);
         this.tabela.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(this.tabela));
 

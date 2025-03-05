@@ -79,14 +79,6 @@ public class ListaAtendimento extends FormTableGeneric {
         JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        this.tabela.getColumnModel().getColumn(0);
-        this.tabela.getColumnModel().getColumn(1);
-        this.tabela.getColumnModel().getColumn(2);
-        this.tabela.getColumnModel().getColumn(3);
-        this.tabela.getColumnModel().getColumn(4);
-        this.tabela.getColumnModel().getColumn(5);
-        this.tabela.getColumnModel().getColumn(6);
-
         this.tabela.getTableHeader().setReorderingAllowed(false);
         this.tabela.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(this.tabela));
 
