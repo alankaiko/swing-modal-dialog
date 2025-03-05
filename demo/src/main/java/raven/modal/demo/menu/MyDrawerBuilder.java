@@ -76,6 +76,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
         MenuItem items[] = new MenuItem[]{
                 new Item.Label("MAIN"),
                 new Item("Dashboard", "dashboard.svg", FormDashboard.class),
+                new Item("Atendimentos", "dashboard.svg", ListaAtendimento.class),
                 new Item("Convênios", "dashboard.svg", ListaConvenio.class),
                 new Item("Exames", "dashboard.svg", ListaExame.class),
                 new Item("Paciente", "dashboard.svg", ListaPaciente.class),

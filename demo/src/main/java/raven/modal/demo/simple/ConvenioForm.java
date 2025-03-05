@@ -25,6 +25,7 @@ public class ConvenioForm extends FormModalDialogGeneric {
     private void init() {
         this.setLayout(new MigLayout("fillx,wrap,insets 5 30 5 30", "[grow][grow][grow][grow]", ""));
 
+        //---------------------------------------------------------------
         this.add(new JLabel("Registro"), "cell 0 0");
         this.add(this.registro, "cell 0 1,growx");
 
@@ -37,6 +38,7 @@ public class ConvenioForm extends FormModalDialogGeneric {
         this.add(new JLabel("Ativo"), "cell 3 0");
         this.add(this.ativo, "cell 3 1");
 
+        //---------------------------------------------------------------
         this.add(new JLabel("Nome"), "cell 0 2, span 5");
         this.add(this.nomeConvenio, "cell 0 3,grow, span 5");
 

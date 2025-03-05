@@ -30,8 +30,10 @@ public class TabelaGenerica<T> extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return this.acessadores.get(columnIndex).apply(this.linhas.get(0)).getClass();
+        Object value = this.acessadores.get(columnIndex).apply(this.linhas.isEmpty() ? null : this.linhas.get(0));
+        return value == null ? String.class : value.getClass();
     }
+
 
     @Override
     public int getRowCount() {

@@ -2,6 +2,7 @@ package raven.modal.demo.repository;
 
 import raven.modal.demo.model.Atendimento;
 import raven.modal.demo.model.dto.AtendimentoDTO;
+import raven.modal.demo.model.resumo.AtendimentoResumo;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface AtendimentoRepository {
 
     List<Atendimento> listar();
 
-    List<Atendimento> filtrando(AtendimentoDTO filtro);
+    List<AtendimentoResumo> filtrando(AtendimentoDTO filtro);
 }

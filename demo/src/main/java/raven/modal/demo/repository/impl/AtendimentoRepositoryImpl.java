@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import raven.modal.demo.model.*;
 import raven.modal.demo.model.dto.AtendimentoDTO;
 import raven.modal.demo.model.enuns.EnumTipoAtendimento;
+import raven.modal.demo.model.resumo.AtendimentoResumo;
 import raven.modal.demo.repository.AtendimentoRepository;
 import raven.modal.demo.utils.EntityManagerFactorySingleton;
 
@@ -82,16 +83,30 @@ public class AtendimentoRepositoryImpl implements AtendimentoRepository {
     }
 
     @Override
-    public List<Atendimento> filtrando(AtendimentoDTO filtro) {
+    public List<AtendimentoResumo> filtrando(AtendimentoDTO filtro) {
         try {
             CriteriaBuilder builder = this.entityManager.getCriteriaBuilder();
-            CriteriaQuery<Atendimento> query = builder.createQuery(Atendimento.class);
+            CriteriaQuery<AtendimentoResumo> query = builder.createQuery(AtendimentoResumo.class);
             Root<Atendimento> root = query.from(Atendimento.class);
+            Join<Atendimento, Paciente> atendimentoPacienteJoin = root.join(Atendimento_.PACIENTE);
+            Join<Atendimento, Profissional> atendimentoProfissionalJoin = root.join(Atendimento_.MEDICO);
+            Join<Atendimento, UnidadeComp> atendimentoUnidadeCompJoin = root.join(Atendimento_.UNIDADE);
+
+            query.select(builder.construct(
+                    AtendimentoResumo.class,
+                    root.get(Atendimento_.CODIGO),
+                    root.get(Atendimento_.DATAATENDIMENTO),
+                    root.get(Atendimento_.TIPODOATENDIMENTO),
+                    root.get(Atendimento_.STATUSAGENDAMENTO),
+                    atendimentoPacienteJoin.get(Paciente_.NOME),
+                    atendimentoProfissionalJoin.get(Profissional_.NOME),
+                    atendimentoUnidadeCompJoin.get(UnidadeComp_.NOMEUNIDADE)
+            ));
 
             Predicate[] predicates = this.adicionarRestricoes(builder, filtro, root);
             query.where(predicates);
 
-            TypedQuery<Atendimento> typedQuery = this.entityManager.createQuery(query);
+            TypedQuery<AtendimentoResumo> typedQuery = this.entityManager.createQuery(query);
 
             if (filtro.getItensPorPagina() != 0)
                 typedQuery.setMaxResults(filtro.getItensPorPagina());
@@ -104,6 +119,7 @@ public class AtendimentoRepositoryImpl implements AtendimentoRepository {
             throw new RuntimeException("Erro ao aplicar o filtro", e);
         }
     }
+
 
     private Predicate[] adicionarRestricoes(CriteriaBuilder builder, AtendimentoDTO filtro, Root<Atendimento> root) {
         List<Predicate> lista = new ArrayList<>();
