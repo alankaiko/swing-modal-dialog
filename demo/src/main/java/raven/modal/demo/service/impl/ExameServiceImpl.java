@@ -1,38 +1,39 @@
 package raven.modal.demo.service.impl;
 
+import raven.modal.demo.integracao.ExameIntegracao;
+import raven.modal.demo.integracao.impl.ExameIntegracaoImpl;
 import raven.modal.demo.model.Exame;
 import raven.modal.demo.model.dto.ExameDTO;
-import raven.modal.demo.repository.ExameRepository;
-import raven.modal.demo.repository.impl.ExameRepositoryImpl;
 import raven.modal.demo.service.ExameService;
+import raven.modal.demo.utils.AuthToken;
 
 import java.util.List;
 
 public class ExameServiceImpl implements ExameService {
-    private ExameRepository procedimentoMedicoRepository = new ExameRepositoryImpl();
+    private ExameIntegracao exameIntegracao = new ExameIntegracaoImpl("application.properties");
 
     @Override
     public Exame salvar(Exame exame) {
-        return this.procedimentoMedicoRepository.salvar(exame);
+        return this.exameIntegracao.salvar(exame);
     }
 
     @Override
     public void deletar(Long codigo) {
-        this.procedimentoMedicoRepository.deletar(codigo);
+        this.exameIntegracao.deletar(codigo);
     }
 
     @Override
     public Exame buscarId(Long codigo) {
-        return this.procedimentoMedicoRepository.buscarId(codigo);
+        return this.exameIntegracao.buscarId(codigo);
     }
 
     @Override
     public List<Exame> listar() {
-        return this.procedimentoMedicoRepository.listar();
+        return this.exameIntegracao.listar();
     }
 
     @Override
     public List<Exame> filtrando(ExameDTO filter) {
-        return this.procedimentoMedicoRepository.filtrando(filter);
+        return this.exameIntegracao.filtrando(filter, AuthToken.getToken());
     }
 }

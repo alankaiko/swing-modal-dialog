@@ -1,12 +1,11 @@
-package raven.modal.demo.repository;
-
+package raven.modal.demo.integracao;
 
 import raven.modal.demo.model.Profissional;
 import raven.modal.demo.model.dto.ProfissionalDTO;
 
 import java.util.List;
 
-public interface ProfissionalRepository {
+public interface ProfissionalIntegracao {
     Profissional salvar(Profissional profissional);
 
     void deletar(Long codigo);
@@ -15,5 +14,5 @@ public interface ProfissionalRepository {
 
     List<Profissional> listar();
 
-    List<Profissional> filtrando(ProfissionalDTO filtro);
+    List<Profissional> filtrando(ProfissionalDTO filtro, String token);
 }

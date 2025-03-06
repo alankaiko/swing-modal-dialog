@@ -1,11 +1,11 @@
-package raven.modal.demo.repository;
+package raven.modal.demo.integracao;
 
 import raven.modal.demo.model.Sigla;
 import raven.modal.demo.model.dto.SiglaDTO;
 
 import java.util.List;
 
-public interface SiglaRepository {
+public interface SiglaIntegracao {
     Sigla salvar(Sigla sigla);
 
     void deletar(Long codigo);
@@ -14,5 +14,5 @@ public interface SiglaRepository {
 
     List<Sigla> listar();
 
-    List<Sigla> filtrando(SiglaDTO filtro);
+    List<Sigla> filtrando(SiglaDTO filtro, String token);
 }

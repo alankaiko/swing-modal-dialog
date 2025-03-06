@@ -1,12 +1,11 @@
-package raven.modal.demo.repository;
-
+package raven.modal.demo.integracao;
 
 import raven.modal.demo.model.GrupoExame;
 import raven.modal.demo.model.dto.GrupoExameDTO;
 
 import java.util.List;
 
-public interface GrupoExameRepository {
+public interface GrupoExameIntegracao {
     GrupoExame salvar(GrupoExame grupoExame);
 
     void deletar(Long codigo);
@@ -15,5 +14,5 @@ public interface GrupoExameRepository {
 
     List<GrupoExame> listar();
 
-    List<GrupoExame> filtrando(GrupoExameDTO filtro);
+    List<GrupoExame> filtrando(GrupoExameDTO filtro, String token);
 }

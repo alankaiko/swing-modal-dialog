@@ -1,38 +1,39 @@
 package raven.modal.demo.service.impl;
 
+import raven.modal.demo.integracao.ProfissionalIntegracao;
+import raven.modal.demo.integracao.impl.ProfissionalIntegracaoImpl;
 import raven.modal.demo.model.Profissional;
 import raven.modal.demo.model.dto.ProfissionalDTO;
-import raven.modal.demo.repository.ProfissionalRepository;
-import raven.modal.demo.repository.impl.ProfissionalRepositoryImpl;
 import raven.modal.demo.service.ProfissionalService;
+import raven.modal.demo.utils.AuthToken;
 
 import java.util.List;
 
 public class ProfissionalServiceImpl implements ProfissionalService {
-    private ProfissionalRepository profissionalRepository = new ProfissionalRepositoryImpl();
+    private ProfissionalIntegracao profissionalIntegracao = new ProfissionalIntegracaoImpl("application.properties");
 
     @Override
     public Profissional salvar(Profissional profissional) {
-        return this.profissionalRepository.salvar(profissional);
+        return this.profissionalIntegracao.salvar(profissional);
     }
 
     @Override
     public void deletar(Long codigo) {
-        this.profissionalRepository.deletar(codigo);
+        this.profissionalIntegracao.deletar(codigo);
     }
 
     @Override
     public Profissional buscarId(Long codigo) {
-        return this.profissionalRepository.buscarId(codigo);
+        return this.profissionalIntegracao.buscarId(codigo);
     }
 
     @Override
     public List<Profissional> listar() {
-        return this.profissionalRepository.listar();
+        return this.profissionalIntegracao.listar();
     }
 
     @Override
     public List<Profissional> filtrando(ProfissionalDTO filter) {
-        return this.profissionalRepository.filtrando(filter);
+        return this.profissionalIntegracao.filtrando(filter, AuthToken.getToken());
     }
 }

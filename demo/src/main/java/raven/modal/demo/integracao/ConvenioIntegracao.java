@@ -1,11 +1,11 @@
-package raven.modal.demo.repository;
+package raven.modal.demo.integracao;
 
 import raven.modal.demo.model.Convenio;
 import raven.modal.demo.model.dto.ConvenioDTO;
 
 import java.util.List;
 
-public interface ConvenioRepository {
+public interface ConvenioIntegracao {
     Convenio salvar(Convenio convenio);
 
     void deletar(Long codigo);
@@ -14,5 +14,5 @@ public interface ConvenioRepository {
 
     List<Convenio> listar();
 
-    List<Convenio> filtrando(ConvenioDTO filtro);
+    List<Convenio> filtrando(ConvenioDTO filtro, String token);
 }

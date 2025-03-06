@@ -1,11 +1,11 @@
-package raven.modal.demo.repository;
+package raven.modal.demo.integracao;
 
 import raven.modal.demo.model.ProcedimentoMedico;
 import raven.modal.demo.model.dto.ProcedimentoMedicoDTO;
 
 import java.util.List;
 
-public interface ProcedimentoMedicoRepository {
+public interface ProcedimentoMedicoIntegracao {
     ProcedimentoMedico salvar(ProcedimentoMedico procedimentoMedico);
 
     void deletar(Long codigo);
@@ -14,5 +14,5 @@ public interface ProcedimentoMedicoRepository {
 
     List<ProcedimentoMedico> listar();
 
-    List<ProcedimentoMedico> filtrando(ProcedimentoMedicoDTO filtro);
+    List<ProcedimentoMedico> filtrando(ProcedimentoMedicoDTO filtro, String token);
 }
