@@ -67,7 +67,7 @@ public class ListaProcedimentoMedico extends FormTableGeneric {
                 ProcedimentoMedico::getTitulo
         );
 
-        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaProcedimentoMedicos);
+//        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaProcedimentoMedicos);
 
         this.tabela = new JTable(this.tabelaGenerica);
         JScrollPane scrollPane = new JScrollPane(this.tabela);

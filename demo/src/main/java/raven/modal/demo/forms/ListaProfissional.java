@@ -67,7 +67,7 @@ public class ListaProfissional extends FormTableGeneric {
                 Profissional::getNome
         );
 
-        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaProfissionais);
+//        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaProfissionais);
 
         this.tabela = new JTable(this.tabelaGenerica);
         JScrollPane scrollPane = new JScrollPane(this.tabela);

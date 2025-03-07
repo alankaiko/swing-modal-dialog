@@ -67,7 +67,7 @@ public class ListaSigla extends FormTableGeneric {
                 Sigla::getDescricao
         );
 
-        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaSiglas);
+//        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaSiglas);
 
         this.tabela = new JTable(this.tabelaGenerica);
         JScrollPane scrollPane = new JScrollPane(this.tabela);

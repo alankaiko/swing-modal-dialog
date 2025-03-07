@@ -67,7 +67,7 @@ public class ListaExame extends FormTableGeneric {
                 Exame::getTitulo
         );
 
-        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaExame);
+//        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaExame);
 
         this.tabela = new JTable(this.tabelaGenerica);
         JScrollPane scrollPane = new JScrollPane(this.tabela);

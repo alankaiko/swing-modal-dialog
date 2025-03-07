@@ -2,6 +2,7 @@ package raven.modal.demo.integracao;
 
 import raven.modal.demo.model.Convenio;
 import raven.modal.demo.model.dto.ConvenioDTO;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface ConvenioIntegracao {
 
     List<Convenio> listar();
 
-    List<Convenio> filtrando(ConvenioDTO filtro, String token);
+    PageResponse filtrando(ConvenioDTO filtro, String token);
 }

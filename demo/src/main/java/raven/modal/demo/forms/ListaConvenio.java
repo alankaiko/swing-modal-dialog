@@ -6,19 +6,18 @@ import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.TabelaGenerica;
 import raven.modal.demo.model.Convenio;
-import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.model.dto.ConvenioDTO;
 import raven.modal.demo.service.ConvenioService;
 import raven.modal.demo.service.impl.ConvenioServiceImpl;
 import raven.modal.demo.simple.ConvenioForm;
 import raven.modal.demo.system.FormTableGeneric;
+import raven.modal.demo.utils.PageResponse;
 import raven.modal.demo.utils.SystemForm;
-import raven.modal.demo.utils.table.TableHeaderAlignment;
-import raven.modal.demo.utils.table.TableProfileCellRenderer;
 import raven.modal.option.Location;
 import raven.modal.option.Option;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +29,11 @@ public class ListaConvenio extends FormTableGeneric {
     private ConvenioService convenioService;
     private ConvenioForm convenioForm;
     private Convenio convenio;
-    List<Convenio> listaConvenios;
-    TabelaGenerica<Convenio> tabelaGenerica;
+    private List<Convenio> listaConvenios;
+    private TabelaGenerica<Convenio> tabelaGenerica;
+    private int itensPorPagina;
+    private long totalItens;
+    private long totalPaginas;
 
     @Override
     protected void init() {
@@ -42,10 +44,14 @@ public class ListaConvenio extends FormTableGeneric {
     @Override
     protected void carregarObjetos() {
         ConvenioDTO filtro = new ConvenioDTO();
-        filtro.setItensPorPagina(20);
 
+        filtro.setItensPorPagina(filtro.getItensPorPagina());
         this.convenioService = new ConvenioServiceImpl();
-        this.listaConvenios = this.convenioService.filtrando(filtro);
+        PageResponse pageResponse = this.convenioService.filtrando(filtro);
+        this.listaConvenios = pageResponse.getContent();
+        this.itensPorPagina = pageResponse.getSize();
+        this.totalItens = pageResponse.getTotalElements();
+        this.totalPaginas = pageResponse.getTotalPages();
     }
 
     @Override
@@ -67,70 +73,88 @@ public class ListaConvenio extends FormTableGeneric {
                 Convenio::getNome
         );
 
-        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaConvenios);
+        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaConvenios, this.itensPorPagina);
 
         this.tabela = new JTable(this.tabelaGenerica);
         JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         this.tabela.getTableHeader().setReorderingAllowed(false);
-        this.tabela.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(this.tabela));
 
-        this.tabela.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(this.tabela) {
-            @Override
-            protected int getAlignment(int column) {
-                if (column == 1)
-                    return SwingConstants.LEADING;
-
-                return SwingConstants.CENTER;
-            }
-        });
-
-        panel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "arc:40;" +
-                "background:$Table.background;");
-        this.tabela.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
-                "height:30;" +
-                "hoverBackground:null;" +
-                "pressedBackground:null;" +
-                "separatorColor:$TableHeader.background;");
-        this.tabela.putClientProperty(FlatClientProperties.STYLE, "" +
-                "rowHeight:70;" +
-                "showHorizontalLines:true;" +
-                "intercellSpacing:0,1;" +
-                "cellFocusColor:$TableHeader.hoverBackground;" +
-                "selectionBackground:$TableHeader.hoverBackground;" +
-                "selectionInactiveBackground:$TableHeader.hoverBackground;" +
-                "selectionForeground:$Table.foreground;");
-        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
-                "trackArc:$ScrollBar.thumbArc;" +
-                "trackInsets:3,3,3,3;" +
-                "thumbInsets:3,3,3,3;" +
-                "background:$Table.background;");
-
-        JLabel title = new JLabel("Lista de Convênios");
-        title.putClientProperty(FlatClientProperties.STYLE, "" + "font:bold +2");
-        panel.add(title, "gapx 20");
+        panel.add(new JLabel("Lista de Convênios"), "gapx 20");
         panel.add(this.createHeaderAction());
         panel.add(scrollPane);
+
+        criarBotoesDeNavegacao(panel);
 
         tabb.addTab("Listagem", this.createBorder(panel));
         this.add(tabb, "gapx 7 7");
     }
 
+    private void criarBotoesDeNavegacao(JPanel panel) {
+        JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        JButton btnPrimeiraPagina = new JButton("<<");
+        btnPrimeiraPagina.addActionListener(e -> this.irParaPagina(0));
+
+        JButton btnPaginaAnterior = new JButton("<");
+        btnPaginaAnterior.addActionListener(e -> this.paginaAnterior());
+
+        JButton btnPaginaProxima = new JButton(">");
+        btnPaginaProxima.addActionListener(e -> this.proximaPagina());
+
+        JButton btnUltimaPagina = new JButton(">>");
+        btnUltimaPagina.addActionListener(e -> this.irParaPagina(this.tabelaGenerica.getTotalPaginas() - 1));
+
+        navPanel.add(btnPrimeiraPagina);
+        navPanel.add(btnPaginaAnterior);
+
+        List<Integer> paginasVisiveis = this.tabelaGenerica.getPaginasVisiveis(5);
+
+        for (int pagina : paginasVisiveis) {
+            JButton btnPagina = new JButton(String.valueOf(pagina));
+            btnPagina.addActionListener(e -> irParaPagina(pagina - 1));
+            navPanel.add(btnPagina);
+        }
+
+        navPanel.add(btnPaginaProxima);
+        navPanel.add(btnUltimaPagina);
+
+        panel.add(navPanel, "span 2, growx, center");
+    }
+
+    private void proximaPagina() {
+        tabelaGenerica.proximaPagina();
+        tabela.repaint();
+    }
+
+    private void paginaAnterior() {
+        tabelaGenerica.paginaAnterior();
+        tabela.repaint();
+    }
+
+    private void irParaPagina(int pagina) {
+        tabelaGenerica.irParaPagina(pagina);
+        tabela.repaint();
+    }
+
     @Override
     protected void pesquisar(String texto) {
         ConvenioDTO filtro = new ConvenioDTO();
-        filtro.setItensPorPagina(20);
+
+        filtro.setItensPorPagina(filtro.getItensPorPagina());
         filtro.setNome(texto);
 
         this.convenioService = new ConvenioServiceImpl();
-        this.listaConvenios = this.convenioService.filtrando(filtro);
+        PageResponse pageResponse = this.convenioService.filtrando(filtro);
+        this.listaConvenios = pageResponse.getContent();
+        this.itensPorPagina = pageResponse.getSize();
+        this.totalItens = pageResponse.getTotalElements();
+        this.totalPaginas = pageResponse.getTotalPages();
 
         this.tabelaGenerica.atualizarDados(this.listaConvenios);
         this.tabela.repaint();
     }
-
 
     private void dialogAdicionar(ActionEvent e) {
         if (this.convenioForm == null)
@@ -154,16 +178,6 @@ public class ListaConvenio extends FormTableGeneric {
                 }), option);
     }
 
-    private void salvar() {
-        if (this.convenio == null)
-            this.convenio = new Convenio();
-
-        this.convenio.setCodigo(Long.valueOf(this.convenioForm.getRegistro().getText()));
-
-        this.convenioService.salvar(this.convenio);
-        this.convenio = new Convenio();
-    }
-
     private void dialogEditar(ActionEvent event) {
         if (this.convenioForm == null)
             this.convenioForm = new ConvenioForm();
@@ -176,6 +190,16 @@ public class ListaConvenio extends FormTableGeneric {
         this.convenio = this.convenioService.buscarId(codigo);
 
         this.dialogAdicionar(null);
+    }
+
+    private void salvar() {
+        if (this.convenio == null)
+            this.convenio = new Convenio();
+
+        this.convenio.setCodigo(Long.valueOf(this.convenioForm.getRegistro().getText()));
+
+        this.convenioService.salvar(this.convenio);
+        this.convenio = new Convenio();
     }
 
     private Long selecionarLinha() {

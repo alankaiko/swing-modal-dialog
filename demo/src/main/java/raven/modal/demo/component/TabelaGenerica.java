@@ -11,11 +11,14 @@ public class TabelaGenerica<T> extends AbstractTableModel {
     private List<T> linhas;
     private String[] colunas;
     private List<Function<T, Object>> acessadores;
+    private int paginaAtual = 0;
+    private int itensPorPagina;
 
-    public TabelaGenerica(String[] colunas, List<Function<T, Object>> acessadores, List<T> dados) {
+    public TabelaGenerica(String[] colunas, List<Function<T, Object>> acessadores, List<T> dados, int itensPorPagina) {
         this.colunas = colunas;
-        this.linhas = new ArrayList<>(dados);
         this.acessadores = acessadores;
+        this.itensPorPagina = itensPorPagina;
+        this.linhas = new ArrayList<>(dados);
     }
 
     @Override
@@ -36,33 +39,65 @@ public class TabelaGenerica<T> extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return this.linhas.size();
+        int totalLinhas = this.linhas.size();
+        int linhasIniciadas = paginaAtual * itensPorPagina;
+        int linhasRestantes = totalLinhas - linhasIniciadas;
+        return Math.min(linhasRestantes, itensPorPagina);
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        T objeto = this.linhas.get(rowIndex);
+        int row = paginaAtual * itensPorPagina + rowIndex;
+        T objeto = this.linhas.get(row);
         return this.acessadores.get(columnIndex).apply(objeto);
-    }
-
-    @Override
-    public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        T objeto = this.linhas.get(rowIndex);
-        this.fireTableCellUpdated(rowIndex, columnIndex);
-    }
-
-    public void adicionarLinha(T objeto) {
-        this.linhas.add(objeto);
-        this.fireTableRowsInserted(this.linhas.size() - 1, this.linhas.size() - 1);
-    }
-
-    public void limpar() {
-        this.linhas.clear();
-        this.fireTableDataChanged();
     }
 
     public void atualizarDados(List<T> dados) {
         this.linhas = new ArrayList<>(dados);
+        fireTableDataChanged();
     }
 
+    public void proximaPagina() {
+        if ((paginaAtual + 1) * itensPorPagina < this.linhas.size()) {
+            paginaAtual++;
+            fireTableDataChanged();
+        }
+    }
+
+    public void paginaAnterior() {
+        if (paginaAtual > 0) {
+            paginaAtual--;
+            fireTableDataChanged();
+        }
+    }
+
+    public void irParaPagina(int pagina) {
+        int totalPaginas = (int) Math.ceil((double) this.linhas.size() / itensPorPagina);
+        if (pagina >= 0 && pagina < totalPaginas) {
+            paginaAtual = pagina;
+            fireTableDataChanged();
+        }
+    }
+
+    public int getTotalPaginas() {
+        return (int) Math.ceil((double) this.linhas.size() / itensPorPagina);
+    }
+
+    public List<Integer> getPaginasVisiveis(int numPaginasVisiveis) {
+        int totalPaginas = getTotalPaginas();
+        int inicio = Math.max(paginaAtual - numPaginasVisiveis / 2, 0);
+        int fim = Math.min(inicio + numPaginasVisiveis - 1, totalPaginas - 1);
+
+        List<Integer> paginas = new ArrayList<>();
+        for (int i = inicio; i <= fim; i++) {
+            paginas.add(i + 1);
+        }
+
+        return paginas;
+    }
+
+    public void setItensPorPagina(int itensPorPagina) {
+        this.itensPorPagina = itensPorPagina;
+    }
 }
+

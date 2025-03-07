@@ -125,4 +125,11 @@ public class Utils {
 
         return mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(List.class, clazz));
     }
+
+    public static <T> PageResponse<T> convertJsonToPageResponse(String json, Class<T> clazz) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        return mapper.readValue(json, mapper.getTypeFactory().constructParametricType(PageResponse.class, clazz));
+    }
 }

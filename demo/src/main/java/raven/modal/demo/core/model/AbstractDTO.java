@@ -10,5 +10,5 @@ import java.io.Serializable;
 public class AbstractDTO implements Serializable {
     private int pagina;
 
-    private int itensPorPagina;
+    private int itensPorPagina = 10;
 }

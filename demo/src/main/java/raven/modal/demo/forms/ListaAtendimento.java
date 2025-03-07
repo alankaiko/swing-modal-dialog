@@ -73,7 +73,7 @@ public class ListaAtendimento extends FormTableGeneric {
                 AtendimentoResumo::getUnidade
         );
 
-        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaAtendimentos);
+//        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaAtendimentos);
 
         this.tabela = new JTable(this.tabelaGenerica);
         JScrollPane scrollPane = new JScrollPane(this.tabela);

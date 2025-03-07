@@ -4,6 +4,7 @@ import raven.modal.demo.integracao.ConvenioIntegracao;
 import raven.modal.demo.model.Convenio;
 import raven.modal.demo.model.dto.ConvenioDTO;
 import raven.modal.demo.utils.ConfigParametros;
+import raven.modal.demo.utils.PageResponse;
 import raven.modal.demo.utils.Utils;
 
 import java.io.BufferedReader;
@@ -121,9 +122,9 @@ public class ConvenioIntegracaoImpl implements ConvenioIntegracao {
     }
 
     @Override
-    public List<Convenio> filtrando(ConvenioDTO filtro, String tokenJWT) {
+    public PageResponse filtrando(ConvenioDTO filtro, String tokenJWT) {
         try {
-            String urlStr = this.baseUrl + "/" + this.endpoint + "/listarDesktop";
+            String urlStr = this.baseUrl + "/" + this.endpoint + "/listarPaginado";
             URL url = new URL(urlStr);
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -151,7 +152,7 @@ public class ConvenioIntegracaoImpl implements ConvenioIntegracao {
 
             in.close();
 
-            return Utils.convertJsonToList(response.toString(), Convenio.class);
+            return Utils.convertJsonToPageResponse(response.toString(), Convenio.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

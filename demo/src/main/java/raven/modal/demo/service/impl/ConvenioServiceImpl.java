@@ -6,6 +6,7 @@ import raven.modal.demo.model.Convenio;
 import raven.modal.demo.model.dto.ConvenioDTO;
 import raven.modal.demo.service.ConvenioService;
 import raven.modal.demo.utils.AuthToken;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class ConvenioServiceImpl implements ConvenioService {
     }
 
     @Override
-    public List<Convenio> filtrando(ConvenioDTO filter) {
+    public PageResponse filtrando(ConvenioDTO filter) {
         return this.convenioIntegracao.filtrando(filter, AuthToken.getToken());
     }
 }
