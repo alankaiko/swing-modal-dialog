@@ -159,11 +159,6 @@ public class ListaConvenio extends FormTableGeneric {
             this.convenio = new Convenio();
 
         this.convenio.setCodigo(Long.valueOf(this.convenioForm.getRegistro().getText()));
-        this.convenio.setCodconvenio(Long.valueOf(this.convenioForm.getCodImportacao().getText()));
-        this.convenio.setNome(this.convenioForm.getNomeConvenio().getText());
-        this.convenio.setObservacoes(this.convenioForm.getObservacao().getText());
-        this.convenio.setDatacadastro(this.convenioForm.getCampoDataFormatada().getDatePicker().getSelectedDate());
-        this.convenio.setAtivo(this.convenioForm.getAtivo().isSelected());
 
         this.convenioService.salvar(this.convenio);
         this.convenio = new Convenio();
@@ -179,12 +174,6 @@ public class ListaConvenio extends FormTableGeneric {
             return;
 
         this.convenio = this.convenioService.buscarId(codigo);
-        this.convenioForm.getNomeConvenio().setText(this.convenio.getNome());
-        this.convenioForm.getRegistro().setText(this.convenio.getCodigo() + "");
-        this.convenioForm.getCodImportacao().setText(this.convenio.getCodconvenio() + "");
-        this.convenioForm.getObservacao().setText(this.convenio.getObservacoes());
-//        this.convenioForm.getCampoDataFormatada().getDatePicker().setSelectedDate(this.convenio.getDatacadastro());
-        this.convenioForm.getAtivo().setText(String.valueOf(this.convenio.isAtivo()));
 
         this.dialogAdicionar(null);
     }

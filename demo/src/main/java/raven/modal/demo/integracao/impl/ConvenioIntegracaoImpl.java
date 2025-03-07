@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConvenioIntegracaoImpl implements ConvenioIntegracao {
@@ -114,7 +113,7 @@ public class ConvenioIntegracaoImpl implements ConvenioIntegracao {
             }
             in.close();
 
-            return Utils.convertJsonToObject(response.toString(), ArrayList.class);
+            return Utils.convertJsonToList(response.toString(), Convenio.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,7 +151,7 @@ public class ConvenioIntegracaoImpl implements ConvenioIntegracao {
 
             in.close();
 
-            return Utils.convertJsonToObject(response.toString(), ArrayList.class);
+            return Utils.convertJsonToList(response.toString(), Convenio.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

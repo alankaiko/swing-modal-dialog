@@ -2,6 +2,7 @@ package raven.modal.demo.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.util.StringUtils;
 import raven.modal.demo.model.enuns.EnumSexo;
 
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Utils {
@@ -97,6 +99,10 @@ public class Utils {
             return EnumSexo.INDEFINIDO;
     }
 
+    public static String formatarCpf(String cpf) {
+        return cpf.replaceAll("[^0-9]", "");
+    }
+
     public static String convertObjectToJson(Object object) throws Exception {
         if (object != null) {
             ObjectMapper mapper = new ObjectMapper();
@@ -108,12 +114,15 @@ public class Utils {
         return null;
     }
 
-    public static String formatarCpf(String cpf) {
-        return cpf.replaceAll("[^0-9]", "");
-    }
-
     public static <T> T convertJsonToObject(String json, Class<T> objectConverter) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(json, objectConverter);
+    }
+
+    public static <T> List<T> convertJsonToList(String json, Class<T> clazz) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        return mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(List.class, clazz));
     }
 }

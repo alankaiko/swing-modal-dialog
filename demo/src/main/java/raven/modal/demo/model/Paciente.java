@@ -1,5 +1,6 @@
 package raven.modal.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import raven.modal.demo.core.model.AbstractEntity;
@@ -18,6 +19,7 @@ public class Paciente extends AbstractEntity {
     private String cpf;
     private String rg;
     private int idade;
+    private Integer idadeMes;
     private String nomepai;
     private String nomemae;
     private String profissao;
@@ -75,6 +77,7 @@ public class Paciente extends AbstractEntity {
     @JoinColumn(name = "tbl_usuario_desativado_id", referencedColumnName = "codigo")
     private Usuario desativadopor;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "paciente")
     private List<CarteiraConvenio> carteiras;
 

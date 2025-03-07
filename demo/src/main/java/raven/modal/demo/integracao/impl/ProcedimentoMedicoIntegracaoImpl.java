@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoIntegracao {
@@ -21,7 +20,7 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
     public ProcedimentoMedicoIntegracaoImpl(String configFilePath) {
         ConfigParametros config = new ConfigParametros(configFilePath);
         this.baseUrl = config.getProperty("api.base-url");
-        this.endpoint = "convenioResources";
+        this.endpoint = "procedimentomedicos";
     }
 
     @Override
@@ -114,7 +113,7 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
             }
             in.close();
 
-            return Utils.convertJsonToObject(response.toString(), ArrayList.class);
+            return Utils.convertJsonToList(response.toString(), ProcedimentoMedico.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,7 +151,7 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
 
             in.close();
 
-            return Utils.convertJsonToObject(response.toString(), ArrayList.class);
+            return Utils.convertJsonToList(response.toString(), ProcedimentoMedico.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

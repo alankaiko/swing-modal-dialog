@@ -1,4 +1,4 @@
-package raven.modal.demo.repository;
+package raven.modal.demo.integracao;
 
 import raven.modal.demo.model.Atendimento;
 import raven.modal.demo.model.dto.AtendimentoDTO;
@@ -6,7 +6,7 @@ import raven.modal.demo.model.resumo.AtendimentoResumo;
 
 import java.util.List;
 
-public interface AtendimentoRepository {
+public interface AtendimentoIntegracao {
     Atendimento salvar(Atendimento atendimento);
 
     void deletar(Long codigo);
@@ -15,5 +15,5 @@ public interface AtendimentoRepository {
 
     List<Atendimento> listar();
 
-    List<AtendimentoResumo> filtrando(AtendimentoDTO filtro);
+    List<AtendimentoResumo> filtrando(AtendimentoDTO filtro, String token);
 }

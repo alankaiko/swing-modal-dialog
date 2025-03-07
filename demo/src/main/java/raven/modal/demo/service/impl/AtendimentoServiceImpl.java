@@ -1,16 +1,17 @@
 package raven.modal.demo.service.impl;
 
+import raven.modal.demo.integracao.AtendimentoIntegracao;
+import raven.modal.demo.integracao.impl.AtendimentoIntegracaoImpl;
 import raven.modal.demo.model.Atendimento;
 import raven.modal.demo.model.dto.AtendimentoDTO;
 import raven.modal.demo.model.resumo.AtendimentoResumo;
-import raven.modal.demo.repository.AtendimentoRepository;
-import raven.modal.demo.repository.impl.AtendimentoRepositoryImpl;
 import raven.modal.demo.service.AtendimentoService;
+import raven.modal.demo.utils.AuthToken;
 
 import java.util.List;
 
 public class AtendimentoServiceImpl implements AtendimentoService {
-    private AtendimentoRepository atendimentoRepository = new AtendimentoRepositoryImpl();
+    private AtendimentoIntegracao atendimentoRepository = new AtendimentoIntegracaoImpl("application.properties");
 
     @Override
     public Atendimento salvar(Atendimento atendimento) {
@@ -34,6 +35,6 @@ public class AtendimentoServiceImpl implements AtendimentoService {
 
     @Override
     public List<AtendimentoResumo> filtrando(AtendimentoDTO filter) {
-        return this.atendimentoRepository.filtrando(filter);
+        return this.atendimentoRepository.filtrando(filter, AuthToken.getToken());
     }
 }

@@ -1,8 +1,9 @@
 package raven.modal.demo.integracao.impl;
 
-import raven.modal.demo.integracao.SiglaIntegracao;
-import raven.modal.demo.model.Sigla;
-import raven.modal.demo.model.dto.SiglaDTO;
+import raven.modal.demo.integracao.AtendimentoIntegracao;
+import raven.modal.demo.model.Atendimento;
+import raven.modal.demo.model.dto.AtendimentoDTO;
+import raven.modal.demo.model.resumo.AtendimentoResumo;
 import raven.modal.demo.utils.ConfigParametros;
 import raven.modal.demo.utils.Utils;
 
@@ -12,19 +13,20 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class SiglaIntegracaoImpl implements SiglaIntegracao {
+public class AtendimentoIntegracaoImpl implements AtendimentoIntegracao {
     private String baseUrl;
     private String endpoint;
 
-    public SiglaIntegracaoImpl(String configFilePath) {
+    public AtendimentoIntegracaoImpl(String configFilePath) {
         ConfigParametros config = new ConfigParametros(configFilePath);
         this.baseUrl = config.getProperty("api.base-url");
-        this.endpoint = "siglas";
+        this.endpoint = "atendimentos";
     }
 
     @Override
-    public Sigla salvar(Sigla sigla) {
+    public Atendimento salvar(Atendimento atendimento) {
         try {
             String urlStr = this.baseUrl + this.endpoint;
             URL url = new URL(urlStr);
@@ -34,7 +36,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             connection.setRequestProperty("Accept", "application/json");
             connection.setDoOutput(true);
 
-            String jsonInputString = Utils.convertObjectToJson(sigla);
+            String jsonInputString = Utils.convertObjectToJson(atendimento);
 
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
@@ -50,7 +52,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             }
             in.close();
 
-            return Utils.convertJsonToObject(response.toString(), Sigla.class);
+            return Utils.convertJsonToObject(response.toString(), Atendimento.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +75,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
     }
 
     @Override
-    public Sigla buscarId(Long codigo) {
+    public Atendimento buscarId(Long codigo) {
         try {
             String urlStr = this.baseUrl + this.endpoint + "/" + codigo;
             URL url = new URL(urlStr);
@@ -89,7 +91,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             }
             in.close();
 
-            return Utils.convertJsonToObject(response.toString(), Sigla.class);
+            return Utils.convertJsonToObject(response.toString(), Atendimento.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,7 +99,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
     }
 
     @Override
-    public List<Sigla> listar() {
+    public List<Atendimento> listar() {
         try {
             String urlStr = this.baseUrl + this.endpoint;
             URL url = new URL(urlStr);
@@ -113,7 +115,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             }
             in.close();
 
-            return Utils.convertJsonToList(response.toString(), Sigla.class);
+            return Utils.convertJsonToList(response.toString(), Atendimento.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -121,7 +123,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
     }
 
     @Override
-    public List<Sigla> filtrando(SiglaDTO filtro, String tokenJWT) {
+    public List<AtendimentoResumo> filtrando(AtendimentoDTO filtro, String tokenJWT) {
         try {
             String urlStr = this.baseUrl + "/" + this.endpoint + "/listarDesktop";
             URL url = new URL(urlStr);
@@ -151,7 +153,9 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
 
             in.close();
 
-            return Utils.convertJsonToList(response.toString(), Sigla.class);
+            List<Atendimento> lista = Utils.convertJsonToList(response.toString(), Atendimento.class);
+
+            return lista.stream().map(elo -> new AtendimentoResumo().mapearDeAtendimento(elo)).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -169,6 +169,12 @@
             <version>2.12.3</version> <!-- Certifique-se de usar a versão mais recente disponível -->
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.15.2</version> <!-- Escolha a versão mais recente -->
+        </dependency>
+
 
     </dependencies>
 

@@ -3,6 +3,7 @@ package raven.modal.demo.model.resumo;
 
 import lombok.Getter;
 import lombok.Setter;
+import raven.modal.demo.model.Atendimento;
 import raven.modal.demo.model.enuns.EnumStatusAgendamento;
 import raven.modal.demo.model.enuns.EnumTipoAtendimento;
 
@@ -25,17 +26,21 @@ public class AtendimentoResumo {
 
     private String unidade;
 
-    public AtendimentoResumo(long codigo, LocalDate dataAtendimento, EnumTipoAtendimento tipoAtendimento,
-                             EnumStatusAgendamento statusAgendamento, String nomePaciente,
-                             String nomeProfissional, String nomeUnidade) {
-        this.codigo = codigo;
-        this.dataatendimento = dataAtendimento;
-        this.tipo = this.montarTipoAtendimento(tipoAtendimento);
-        this.status = this.montarStatus(statusAgendamento);
-        this.nomePaciente = nomePaciente;
-        this.nomeMedico = nomeProfissional;
-        this.unidade = nomeUnidade;
+    public AtendimentoResumo mapearDeAtendimento(Atendimento atendimento) {
+        if (atendimento == null)
+            return this;
+
+        this.codigo = atendimento.getCodigo();
+        this.nomePaciente = atendimento.getPaciente().getNome();
+        this.dataatendimento = atendimento.getDataatendimento();
+        this.tipo = this.montarTipoAtendimento(atendimento.getTipodoatendimento());
+        this.status = this.montarStatus(atendimento.getStatusagendamento());
+        this.nomeMedico = atendimento.getMedico().getNome();
+        this.unidade = atendimento.getUnidade().getNomeunidade();
+
+        return this;
     }
+
 
     private String montarTipoAtendimento(EnumTipoAtendimento valor) {
         if (valor == null)

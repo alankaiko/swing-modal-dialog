@@ -1,8 +1,8 @@
 package raven.modal.demo.integracao.impl;
 
-import raven.modal.demo.integracao.SiglaIntegracao;
-import raven.modal.demo.model.Sigla;
-import raven.modal.demo.model.dto.SiglaDTO;
+import raven.modal.demo.integracao.PacienteIntegracao;
+import raven.modal.demo.model.Paciente;
+import raven.modal.demo.model.dto.PacienteDTO;
 import raven.modal.demo.utils.ConfigParametros;
 import raven.modal.demo.utils.Utils;
 
@@ -13,18 +13,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-public class SiglaIntegracaoImpl implements SiglaIntegracao {
+public class PacienteIntegracaoImpl implements PacienteIntegracao {
     private String baseUrl;
     private String endpoint;
 
-    public SiglaIntegracaoImpl(String configFilePath) {
+    public PacienteIntegracaoImpl(String configFilePath) {
         ConfigParametros config = new ConfigParametros(configFilePath);
         this.baseUrl = config.getProperty("api.base-url");
-        this.endpoint = "siglas";
+        this.endpoint = "pacientes";
     }
 
     @Override
-    public Sigla salvar(Sigla sigla) {
+    public Paciente salvar(Paciente paciente) {
         try {
             String urlStr = this.baseUrl + this.endpoint;
             URL url = new URL(urlStr);
@@ -34,7 +34,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             connection.setRequestProperty("Accept", "application/json");
             connection.setDoOutput(true);
 
-            String jsonInputString = Utils.convertObjectToJson(sigla);
+            String jsonInputString = Utils.convertObjectToJson(paciente);
 
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes("utf-8");
@@ -50,7 +50,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             }
             in.close();
 
-            return Utils.convertJsonToObject(response.toString(), Sigla.class);
+            return Utils.convertJsonToObject(response.toString(), Paciente.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +73,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
     }
 
     @Override
-    public Sigla buscarId(Long codigo) {
+    public Paciente buscarId(Long codigo) {
         try {
             String urlStr = this.baseUrl + this.endpoint + "/" + codigo;
             URL url = new URL(urlStr);
@@ -89,7 +89,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             }
             in.close();
 
-            return Utils.convertJsonToObject(response.toString(), Sigla.class);
+            return Utils.convertJsonToObject(response.toString(), Paciente.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,7 +97,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
     }
 
     @Override
-    public List<Sigla> listar() {
+    public List<Paciente> listar() {
         try {
             String urlStr = this.baseUrl + this.endpoint;
             URL url = new URL(urlStr);
@@ -113,7 +113,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             }
             in.close();
 
-            return Utils.convertJsonToList(response.toString(), Sigla.class);
+            return Utils.convertJsonToList(response.toString(), Paciente.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -121,7 +121,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
     }
 
     @Override
-    public List<Sigla> filtrando(SiglaDTO filtro, String tokenJWT) {
+    public List<Paciente> filtrando(PacienteDTO filtro, String tokenJWT) {
         try {
             String urlStr = this.baseUrl + "/" + this.endpoint + "/listarDesktop";
             URL url = new URL(urlStr);
@@ -151,7 +151,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
 
             in.close();
 
-            return Utils.convertJsonToList(response.toString(), Sigla.class);
+            return Utils.convertJsonToList(response.toString(), Paciente.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
