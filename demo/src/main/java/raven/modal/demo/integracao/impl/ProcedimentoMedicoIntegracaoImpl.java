@@ -4,6 +4,7 @@ import raven.modal.demo.integracao.ProcedimentoMedicoIntegracao;
 import raven.modal.demo.model.ProcedimentoMedico;
 import raven.modal.demo.model.dto.ProcedimentoMedicoDTO;
 import raven.modal.demo.utils.ConfigParametros;
+import raven.modal.demo.utils.PageResponse;
 import raven.modal.demo.utils.Utils;
 
 import java.io.BufferedReader;
@@ -11,16 +12,19 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoIntegracao {
     private String baseUrl;
     private String endpoint;
+    private String token;
 
-    public ProcedimentoMedicoIntegracaoImpl(String configFilePath) {
+    public ProcedimentoMedicoIntegracaoImpl(String configFilePath, String token) {
         ConfigParametros config = new ConfigParametros(configFilePath);
         this.baseUrl = config.getProperty("api.base-url");
         this.endpoint = "procedimentomedicos";
+        this.token = token;
     }
 
     @Override
@@ -32,6 +36,7 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
             connection.setDoOutput(true);
 
             String jsonInputString = Utils.convertObjectToJson(procedimentoMedico);
@@ -65,6 +70,7 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
 
             connection.getResponseCode();
         } catch (Exception e) {
@@ -75,11 +81,12 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
     @Override
     public ProcedimentoMedico buscarId(Long codigo) {
         try {
-            String urlStr = this.baseUrl + this.endpoint + "/" + codigo;
+            String urlStr = this.baseUrl + "/" + this.endpoint + "/" + codigo;
             URL url = new URL(urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
@@ -104,6 +111,7 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
@@ -121,7 +129,7 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
     }
 
     @Override
-    public List<ProcedimentoMedico> filtrando(ProcedimentoMedicoDTO filtro, String tokenJWT) {
+    public PageResponse filtrando(ProcedimentoMedicoDTO filtro) {
         try {
             String urlStr = this.baseUrl + "/" + this.endpoint + "/listarDesktop";
             URL url = new URL(urlStr);
@@ -131,7 +139,7 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
 
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty("Authorization", "Bearer " + tokenJWT);
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
             connection.setDoOutput(true);
 
             String jsonInputString = Utils.convertObjectToJson(filtro);
@@ -151,7 +159,16 @@ public class ProcedimentoMedicoIntegracaoImpl implements ProcedimentoMedicoInteg
 
             in.close();
 
-            return Utils.convertJsonToList(response.toString(), ProcedimentoMedico.class);
+            PageResponse pageResponse = new PageResponse();
+
+            List<ProcedimentoMedico> lista = new ArrayList<>();
+            lista.addAll(Utils.convertJsonToList(response.toString(), ProcedimentoMedico.class));
+            pageResponse.setContent(lista);
+            pageResponse.setSize(10);
+            pageResponse.setTotalElements(10);
+            pageResponse.setTotalPages(1);
+
+            return pageResponse;
         } catch (Exception e) {
             e.printStackTrace();
         }

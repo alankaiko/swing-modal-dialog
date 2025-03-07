@@ -2,6 +2,7 @@ package raven.modal.demo.integracao;
 
 import raven.modal.demo.model.Exame;
 import raven.modal.demo.model.dto.ExameDTO;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface ExameIntegracao {
 
     List<Exame> listar();
 
-    List<Exame> filtrando(ExameDTO filtro, String token);
+    PageResponse filtrando(ExameDTO filtro);
 }

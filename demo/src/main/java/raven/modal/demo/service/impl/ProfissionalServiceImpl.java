@@ -6,11 +6,12 @@ import raven.modal.demo.model.Profissional;
 import raven.modal.demo.model.dto.ProfissionalDTO;
 import raven.modal.demo.service.ProfissionalService;
 import raven.modal.demo.utils.AuthToken;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
 public class ProfissionalServiceImpl implements ProfissionalService {
-    private ProfissionalIntegracao profissionalIntegracao = new ProfissionalIntegracaoImpl("application.properties");
+    private ProfissionalIntegracao profissionalIntegracao = new ProfissionalIntegracaoImpl("application.properties", AuthToken.getToken());
 
     @Override
     public Profissional salvar(Profissional profissional) {
@@ -33,7 +34,7 @@ public class ProfissionalServiceImpl implements ProfissionalService {
     }
 
     @Override
-    public List<Profissional> filtrando(ProfissionalDTO filter) {
-        return this.profissionalIntegracao.filtrando(filter, AuthToken.getToken());
+    public PageResponse filtrando(ProfissionalDTO filter) {
+        return this.profissionalIntegracao.filtrando(filter);
     }
 }

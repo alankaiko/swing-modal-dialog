@@ -6,11 +6,12 @@ import raven.modal.demo.model.GrupoExame;
 import raven.modal.demo.model.dto.GrupoExameDTO;
 import raven.modal.demo.service.GrupoExameService;
 import raven.modal.demo.utils.AuthToken;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
 public class GrupoExameServiceImpl implements GrupoExameService {
-    private GrupoExameIntegracao grupoExameIntegracao = new GrupoExameIntegracaoImpl("application.properties");
+    private GrupoExameIntegracao grupoExameIntegracao = new GrupoExameIntegracaoImpl("application.properties", AuthToken.getToken());
 
     @Override
     public GrupoExame salvar(GrupoExame grupoExame) {
@@ -33,7 +34,7 @@ public class GrupoExameServiceImpl implements GrupoExameService {
     }
 
     @Override
-    public List<GrupoExame> filtrando(GrupoExameDTO filter) {
-        return this.grupoExameIntegracao.filtrando(filter, AuthToken.getToken());
+    public PageResponse filtrando(GrupoExameDTO filter) {
+        return this.grupoExameIntegracao.filtrando(filter);
     }
 }

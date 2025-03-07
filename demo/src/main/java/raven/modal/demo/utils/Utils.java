@@ -116,6 +116,8 @@ public class Utils {
 
     public static <T> T convertJsonToObject(String json, Class<T> objectConverter) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
         return mapper.readValue(json, objectConverter);
     }
 

@@ -6,11 +6,12 @@ import raven.modal.demo.model.Sigla;
 import raven.modal.demo.model.dto.SiglaDTO;
 import raven.modal.demo.service.SiglaService;
 import raven.modal.demo.utils.AuthToken;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
 public class SiglaServiceImpl implements SiglaService {
-    private SiglaIntegracao siglaIntegracao = new SiglaIntegracaoImpl("application.properties");
+    private SiglaIntegracao siglaIntegracao = new SiglaIntegracaoImpl("application.properties", AuthToken.getToken());
 
     @Override
     public Sigla salvar(Sigla sigla) {
@@ -33,7 +34,7 @@ public class SiglaServiceImpl implements SiglaService {
     }
 
     @Override
-    public List<Sigla> filtrando(SiglaDTO filter) {
-        return this.siglaIntegracao.filtrando(filter, AuthToken.getToken());
+    public PageResponse filtrando(SiglaDTO filter) {
+        return this.siglaIntegracao.filtrando(filter);
     }
 }

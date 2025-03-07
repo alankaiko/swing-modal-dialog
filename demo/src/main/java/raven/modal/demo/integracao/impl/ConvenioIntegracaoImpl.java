@@ -76,7 +76,7 @@ public class ConvenioIntegracaoImpl implements ConvenioIntegracao {
     @Override
     public Convenio buscarId(Long codigo) {
         try {
-            String urlStr = this.baseUrl + this.endpoint + "/" + codigo;
+            String urlStr = this.baseUrl + "/" + this.endpoint + "/" + codigo;
             URL url = new URL(urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");

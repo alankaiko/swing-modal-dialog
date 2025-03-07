@@ -2,6 +2,7 @@ package raven.modal.demo.service;
 
 import raven.modal.demo.model.Profissional;
 import raven.modal.demo.model.dto.ProfissionalDTO;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface ProfissionalService {
 
     List<Profissional> listar();
 
-    List<Profissional> filtrando(ProfissionalDTO filter);
+    PageResponse filtrando(ProfissionalDTO filter);
 }

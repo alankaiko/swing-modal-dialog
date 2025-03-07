@@ -6,11 +6,12 @@ import raven.modal.demo.model.Paciente;
 import raven.modal.demo.model.dto.PacienteDTO;
 import raven.modal.demo.service.PacienteService;
 import raven.modal.demo.utils.AuthToken;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
 public class PacienteServiceImpl implements PacienteService {
-    private PacienteIntegracao pacienteRepository = new PacienteIntegracaoImpl("application.properties");
+    private PacienteIntegracao pacienteRepository = new PacienteIntegracaoImpl("application.properties", AuthToken.getToken());
 
     @Override
     public Paciente salvar(Paciente paciente) {
@@ -33,7 +34,7 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public List<Paciente> filtrando(PacienteDTO filter) {
-        return this.pacienteRepository.filtrando(filter, AuthToken.getToken());
+    public PageResponse filtrando(PacienteDTO filter) {
+        return this.pacienteRepository.filtrando(filter);
     }
 }

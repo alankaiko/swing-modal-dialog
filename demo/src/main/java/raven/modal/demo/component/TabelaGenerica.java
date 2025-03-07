@@ -1,5 +1,7 @@
 package raven.modal.demo.component;
 
+import raven.modal.demo.utils.PageResponse;
+
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +13,23 @@ public class TabelaGenerica<T> extends AbstractTableModel {
     private List<T> linhas;
     private String[] colunas;
     private List<Function<T, Object>> acessadores;
-    private int paginaAtual = 0;
+    private int paginaAtual;
     private int itensPorPagina;
+    private int totalPaginas;
+    private long totalItens;
 
-    public TabelaGenerica(String[] colunas, List<Function<T, Object>> acessadores, List<T> dados, int itensPorPagina) {
+    public TabelaGenerica(String[] colunas, List<Function<T, Object>> acessadores, PageResponse pageResponse) {
         this.colunas = colunas;
         this.acessadores = acessadores;
-        this.itensPorPagina = itensPorPagina;
-        this.linhas = new ArrayList<>(dados);
+        atualizarPagina(pageResponse);
+    }
+
+    public void atualizarPagina(PageResponse pageResponse) {
+        this.linhas = pageResponse.getContent();
+        this.itensPorPagina = pageResponse.getSize();
+        this.totalItens = pageResponse.getTotalElements();
+        this.totalPaginas = pageResponse.getTotalPages();
+        this.fireTableDataChanged();
     }
 
     @Override
@@ -40,53 +51,46 @@ public class TabelaGenerica<T> extends AbstractTableModel {
     @Override
     public int getRowCount() {
         int totalLinhas = this.linhas.size();
-        int linhasIniciadas = paginaAtual * itensPorPagina;
+        int linhasIniciadas = this.paginaAtual * this.itensPorPagina;
         int linhasRestantes = totalLinhas - linhasIniciadas;
-        return Math.min(linhasRestantes, itensPorPagina);
+        return Math.min(linhasRestantes, this.itensPorPagina);
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        int row = paginaAtual * itensPorPagina + rowIndex;
+        int row = this.paginaAtual * this.itensPorPagina + rowIndex;
         T objeto = this.linhas.get(row);
         return this.acessadores.get(columnIndex).apply(objeto);
     }
 
-    public void atualizarDados(List<T> dados) {
-        this.linhas = new ArrayList<>(dados);
-        fireTableDataChanged();
-    }
-
     public void proximaPagina() {
-        if ((paginaAtual + 1) * itensPorPagina < this.linhas.size()) {
-            paginaAtual++;
-            fireTableDataChanged();
+        if ((this.paginaAtual + 1) * this.itensPorPagina < this.linhas.size()) {
+            this.paginaAtual++;
+            this.fireTableDataChanged();
         }
     }
 
     public void paginaAnterior() {
-        if (paginaAtual > 0) {
-            paginaAtual--;
-            fireTableDataChanged();
+        if (this.paginaAtual > 0) {
+            this.paginaAtual--;
+            this.fireTableDataChanged();
         }
     }
 
     public void irParaPagina(int pagina) {
-        int totalPaginas = (int) Math.ceil((double) this.linhas.size() / itensPorPagina);
-        if (pagina >= 0 && pagina < totalPaginas) {
-            paginaAtual = pagina;
-            fireTableDataChanged();
+        if (pagina >= 0 && pagina < this.totalPaginas) {
+            this.paginaAtual = pagina;
+            this.fireTableDataChanged();
         }
     }
 
     public int getTotalPaginas() {
-        return (int) Math.ceil((double) this.linhas.size() / itensPorPagina);
+        return this.totalPaginas;
     }
 
     public List<Integer> getPaginasVisiveis(int numPaginasVisiveis) {
-        int totalPaginas = getTotalPaginas();
-        int inicio = Math.max(paginaAtual - numPaginasVisiveis / 2, 0);
-        int fim = Math.min(inicio + numPaginasVisiveis - 1, totalPaginas - 1);
+        int inicio = Math.max(this.paginaAtual - numPaginasVisiveis / 2, 0);
+        int fim = Math.min(inicio + numPaginasVisiveis - 1, this.totalPaginas - 1);
 
         List<Integer> paginas = new ArrayList<>();
         for (int i = inicio; i <= fim; i++) {
@@ -100,4 +104,3 @@ public class TabelaGenerica<T> extends AbstractTableModel {
         this.itensPorPagina = itensPorPagina;
     }
 }
-

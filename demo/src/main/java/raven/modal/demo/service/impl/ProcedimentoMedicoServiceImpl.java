@@ -6,11 +6,12 @@ import raven.modal.demo.model.ProcedimentoMedico;
 import raven.modal.demo.model.dto.ProcedimentoMedicoDTO;
 import raven.modal.demo.service.ProcedimentoMedicoService;
 import raven.modal.demo.utils.AuthToken;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
 public class ProcedimentoMedicoServiceImpl implements ProcedimentoMedicoService {
-    private ProcedimentoMedicoIntegracao procedimentoMedicoRepository = new ProcedimentoMedicoIntegracaoImpl("application.properties");
+    private ProcedimentoMedicoIntegracao procedimentoMedicoRepository = new ProcedimentoMedicoIntegracaoImpl("application.properties", AuthToken.getToken());
 
     @Override
     public ProcedimentoMedico salvar(ProcedimentoMedico procedimentoMedico) {
@@ -33,7 +34,7 @@ public class ProcedimentoMedicoServiceImpl implements ProcedimentoMedicoService 
     }
 
     @Override
-    public List<ProcedimentoMedico> filtrando(ProcedimentoMedicoDTO filter) {
-        return this.procedimentoMedicoRepository.filtrando(filter, AuthToken.getToken());
+    public PageResponse filtrando(ProcedimentoMedicoDTO filter) {
+        return this.procedimentoMedicoRepository.filtrando(filter);
     }
 }

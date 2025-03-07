@@ -2,6 +2,7 @@ package raven.modal.demo.service;
 
 import raven.modal.demo.model.Exame;
 import raven.modal.demo.model.dto.ExameDTO;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface ExameService {
 
     List<Exame> listar();
 
-    List<Exame> filtrando(ExameDTO filter);
+    PageResponse filtrando(ExameDTO filter);
 }

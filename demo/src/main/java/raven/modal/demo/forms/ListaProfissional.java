@@ -5,24 +5,22 @@ import net.miginfocom.swing.MigLayout;
 import raven.modal.ModalDialog;
 import raven.modal.component.SimpleModalBorder;
 import raven.modal.demo.component.TabelaGenerica;
-import raven.modal.demo.model.ModelProfile;
 import raven.modal.demo.model.Profissional;
 import raven.modal.demo.model.dto.ProfissionalDTO;
 import raven.modal.demo.service.ProfissionalService;
 import raven.modal.demo.service.impl.ProfissionalServiceImpl;
 import raven.modal.demo.simple.ProfissionalForm;
 import raven.modal.demo.system.FormTableGeneric;
+import raven.modal.demo.utils.PageResponse;
 import raven.modal.demo.utils.SystemForm;
-import raven.modal.demo.utils.table.TableHeaderAlignment;
-import raven.modal.demo.utils.table.TableProfileCellRenderer;
 import raven.modal.option.Location;
 import raven.modal.option.Option;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 @SystemForm(name = "Médicos", description = "Tabela de Médicos")
 public class ListaProfissional extends FormTableGeneric {
@@ -30,8 +28,8 @@ public class ListaProfissional extends FormTableGeneric {
     private ProfissionalService profissionalService;
     private ProfissionalForm profissionalForm;
     private Profissional profissional;
-    List<Profissional> listaProfissionais;
-    TabelaGenerica<Profissional> tabelaGenerica;
+    private PageResponse pageResponse;
+    private TabelaGenerica<Profissional> tabelaGenerica;
 
     @Override
     protected void init() {
@@ -42,10 +40,13 @@ public class ListaProfissional extends FormTableGeneric {
     @Override
     protected void carregarObjetos() {
         ProfissionalDTO filtro = new ProfissionalDTO();
-        filtro.setItensPorPagina(20);
-
+        filtro.setItensPorPagina(10);
+        filtro.setPagina(0);
         this.profissionalService = new ProfissionalServiceImpl();
-        this.listaProfissionais = this.profissionalService.filtrando(filtro);
+
+        this.pageResponse = this.profissionalService.filtrando(filtro);
+        this.tabelaGenerica = new TabelaGenerica<>(new String[]{"Código", "Descrição"},
+                Arrays.asList(Profissional::getCodigo, Profissional::getNome), this.pageResponse);
     }
 
     @Override
@@ -60,31 +61,10 @@ public class ListaProfissional extends FormTableGeneric {
         tabb.putClientProperty(FlatClientProperties.STYLE, "" + "tabType:card");
 
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
-        String[] colunas = {"Código", "Descrição"};
-
-        List<Function<Profissional, Object>> acessadores = Arrays.asList(
-                Profissional::getCodigo,
-                Profissional::getNome
-        );
-
-//        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaProfissionais);
 
         this.tabela = new JTable(this.tabelaGenerica);
         JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-
-        this.tabela.getTableHeader().setReorderingAllowed(false);
-        this.tabela.setDefaultRenderer(ModelProfile.class, new TableProfileCellRenderer(this.tabela));
-
-        this.tabela.getTableHeader().setDefaultRenderer(new TableHeaderAlignment(this.tabela) {
-            @Override
-            protected int getAlignment(int column) {
-                if (column == 1)
-                    return SwingConstants.LEADING;
-
-                return SwingConstants.CENTER;
-            }
-        });
 
         panel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "arc:40;" +
@@ -108,26 +88,78 @@ public class ListaProfissional extends FormTableGeneric {
                 "thumbInsets:3,3,3,3;" +
                 "background:$Table.background;");
 
-        JLabel title = new JLabel("Lista de Médicos");
-        title.putClientProperty(FlatClientProperties.STYLE, "" + "font:bold +2");
-        panel.add(title, "gapx 20");
+        panel.add(new JLabel("Lista de Médicos"), "gapx 20");
         panel.add(this.createHeaderAction());
         panel.add(scrollPane);
+
+        this.criarBotoesDeNavegacao(panel);
 
         tabb.addTab("Listagem", this.createBorder(panel));
         this.add(tabb, "gapx 7 7");
     }
 
+    private void criarBotoesDeNavegacao(JPanel panel) {
+        JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        JButton btnPrimeiraPagina = new JButton("<<");
+        btnPrimeiraPagina.addActionListener(e -> this.irParaPagina(0));
+
+        JButton btnPaginaAnterior = new JButton("<");
+        btnPaginaAnterior.addActionListener(e -> this.paginaAnterior());
+
+        JButton btnPaginaProxima = new JButton(">");
+        btnPaginaProxima.addActionListener(e -> this.proximaPagina());
+
+        JButton btnUltimaPagina = new JButton(">>");
+        btnUltimaPagina.addActionListener(e -> this.irParaPagina(this.tabelaGenerica.getTotalPaginas() - 1));
+
+        navPanel.add(btnPrimeiraPagina);
+        navPanel.add(btnPaginaAnterior);
+
+        List<Integer> paginasVisiveis = this.tabelaGenerica.getPaginasVisiveis(5);
+
+        for (int pagina : paginasVisiveis) {
+            JButton btnPagina = new JButton(String.valueOf(pagina));
+            btnPagina.addActionListener(e -> this.irParaPagina(pagina - 1));
+            navPanel.add(btnPagina);
+        }
+
+        navPanel.add(btnPaginaProxima);
+        navPanel.add(btnUltimaPagina);
+
+        panel.add(navPanel, "span 2, growx, center");
+    }
+
+
+    private void proximaPagina() {
+        this.tabelaGenerica.proximaPagina();
+        this.tabela.repaint();
+    }
+
+    private void paginaAnterior() {
+        this.tabelaGenerica.paginaAnterior();
+        this.tabela.repaint();
+    }
+
+    private void irParaPagina(int pagina) {
+        ProfissionalDTO filtro = new ProfissionalDTO();
+        filtro.setItensPorPagina(10);
+        filtro.setPagina(pagina);
+
+        this.pageResponse = this.profissionalService.filtrando(filtro);
+        this.tabelaGenerica.atualizarPagina(this.pageResponse);
+        this.tabela.repaint();
+    }
+
     @Override
     protected void pesquisar(String texto) {
         ProfissionalDTO filtro = new ProfissionalDTO();
-        filtro.setItensPorPagina(20);
+        filtro.setItensPorPagina(10);
         filtro.setNome(texto);
+        filtro.setPagina(0);
 
-        this.profissionalService = new ProfissionalServiceImpl();
-        this.listaProfissionais = this.profissionalService.filtrando(filtro);
-
-        this.tabelaGenerica.atualizarDados(this.listaProfissionais);
+        this.pageResponse = this.profissionalService.filtrando(filtro);
+        this.tabelaGenerica.atualizarPagina(this.pageResponse);
         this.tabela.repaint();
     }
 
@@ -154,16 +186,6 @@ public class ListaProfissional extends FormTableGeneric {
                 }), option);
     }
 
-    private void salvar() {
-        if (this.profissional == null)
-            this.profissional = new Profissional();
-
-        this.profissional.setCodigo(Long.valueOf(this.profissionalForm.getRegistro().getText()));
-
-        this.profissionalService.salvar(this.profissional);
-        this.profissional = new Profissional();
-    }
-
     private void dialogEditar(ActionEvent event) {
         if (this.profissionalForm == null)
             this.profissionalForm = new ProfissionalForm();
@@ -176,6 +198,16 @@ public class ListaProfissional extends FormTableGeneric {
         this.profissional = this.profissionalService.buscarId(codigo);
 
         this.dialogAdicionar(null);
+    }
+
+    private void salvar() {
+        if (this.profissional == null)
+            this.profissional = new Profissional();
+
+        this.profissional.setCodigo(Long.valueOf(this.profissionalForm.getRegistro().getText()));
+
+        this.profissionalService.salvar(this.profissional);
+        this.profissional = new Profissional();
     }
 
     private Long selecionarLinha() {

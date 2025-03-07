@@ -2,6 +2,7 @@ package raven.modal.demo.service;
 
 import raven.modal.demo.model.Sigla;
 import raven.modal.demo.model.dto.SiglaDTO;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface SiglaService {
 
     List<Sigla> listar();
 
-    List<Sigla> filtrando(SiglaDTO filtro);
+    PageResponse filtrando(SiglaDTO filtro);
 }

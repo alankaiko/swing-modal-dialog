@@ -6,11 +6,12 @@ import raven.modal.demo.model.Exame;
 import raven.modal.demo.model.dto.ExameDTO;
 import raven.modal.demo.service.ExameService;
 import raven.modal.demo.utils.AuthToken;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
 public class ExameServiceImpl implements ExameService {
-    private ExameIntegracao exameIntegracao = new ExameIntegracaoImpl("application.properties");
+    private ExameIntegracao exameIntegracao = new ExameIntegracaoImpl("application.properties", AuthToken.getToken());
 
     @Override
     public Exame salvar(Exame exame) {
@@ -33,7 +34,7 @@ public class ExameServiceImpl implements ExameService {
     }
 
     @Override
-    public List<Exame> filtrando(ExameDTO filter) {
-        return this.exameIntegracao.filtrando(filter, AuthToken.getToken());
+    public PageResponse filtrando(ExameDTO filter) {
+        return this.exameIntegracao.filtrando(filter);
     }
 }

@@ -2,6 +2,7 @@ package raven.modal.demo.service;
 
 import raven.modal.demo.model.GrupoExame;
 import raven.modal.demo.model.dto.GrupoExameDTO;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface GrupoExameService {
 
     List<GrupoExame> listar();
 
-    List<GrupoExame> filtrando(GrupoExameDTO filtro);
+    PageResponse filtrando(GrupoExameDTO filtro);
 }

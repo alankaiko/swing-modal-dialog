@@ -4,6 +4,7 @@ import raven.modal.demo.integracao.SiglaIntegracao;
 import raven.modal.demo.model.Sigla;
 import raven.modal.demo.model.dto.SiglaDTO;
 import raven.modal.demo.utils.ConfigParametros;
+import raven.modal.demo.utils.PageResponse;
 import raven.modal.demo.utils.Utils;
 
 import java.io.BufferedReader;
@@ -11,16 +12,19 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SiglaIntegracaoImpl implements SiglaIntegracao {
     private String baseUrl;
     private String endpoint;
+    private String token;
 
-    public SiglaIntegracaoImpl(String configFilePath) {
+    public SiglaIntegracaoImpl(String configFilePath, String token) {
         ConfigParametros config = new ConfigParametros(configFilePath);
         this.baseUrl = config.getProperty("api.base-url");
         this.endpoint = "siglas";
+        this.token = token;
     }
 
     @Override
@@ -32,6 +36,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
             connection.setDoOutput(true);
 
             String jsonInputString = Utils.convertObjectToJson(sigla);
@@ -65,6 +70,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
 
             connection.getResponseCode();
         } catch (Exception e) {
@@ -75,11 +81,12 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
     @Override
     public Sigla buscarId(Long codigo) {
         try {
-            String urlStr = this.baseUrl + this.endpoint + "/" + codigo;
+            String urlStr = this.baseUrl + "/" + this.endpoint + "/" + codigo;
             URL url = new URL(urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
@@ -104,6 +111,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
@@ -121,7 +129,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
     }
 
     @Override
-    public List<Sigla> filtrando(SiglaDTO filtro, String tokenJWT) {
+    public PageResponse filtrando(SiglaDTO filtro) {
         try {
             String urlStr = this.baseUrl + "/" + this.endpoint + "/listarDesktop";
             URL url = new URL(urlStr);
@@ -131,7 +139,7 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
 
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty("Authorization", "Bearer " + tokenJWT);
+            connection.setRequestProperty("Authorization", "Bearer " + this.token);
             connection.setDoOutput(true);
 
             String jsonInputString = Utils.convertObjectToJson(filtro);
@@ -151,7 +159,16 @@ public class SiglaIntegracaoImpl implements SiglaIntegracao {
 
             in.close();
 
-            return Utils.convertJsonToList(response.toString(), Sigla.class);
+            PageResponse pageResponse = new PageResponse();
+
+            List<Sigla> lista = new ArrayList<>();
+            lista.addAll(Utils.convertJsonToList(response.toString(), Sigla.class));
+            pageResponse.setContent(lista);
+            pageResponse.setSize(4);
+            pageResponse.setTotalElements(4);
+            pageResponse.setTotalPages(1);
+
+            return pageResponse;
         } catch (Exception e) {
             e.printStackTrace();
         }

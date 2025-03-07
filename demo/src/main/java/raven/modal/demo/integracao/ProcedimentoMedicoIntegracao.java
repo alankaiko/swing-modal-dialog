@@ -2,6 +2,7 @@ package raven.modal.demo.integracao;
 
 import raven.modal.demo.model.ProcedimentoMedico;
 import raven.modal.demo.model.dto.ProcedimentoMedicoDTO;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface ProcedimentoMedicoIntegracao {
 
     List<ProcedimentoMedico> listar();
 
-    List<ProcedimentoMedico> filtrando(ProcedimentoMedicoDTO filtro, String token);
+    PageResponse filtrando(ProcedimentoMedicoDTO filtro);
 }

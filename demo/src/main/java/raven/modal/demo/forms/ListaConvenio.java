@@ -21,7 +21,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 @SystemForm(name = "Convenio", description = "Tabela de Convênios")
 public class ListaConvenio extends FormTableGeneric {
@@ -29,11 +28,8 @@ public class ListaConvenio extends FormTableGeneric {
     private ConvenioService convenioService;
     private ConvenioForm convenioForm;
     private Convenio convenio;
-    private List<Convenio> listaConvenios;
+    private PageResponse pageResponse;
     private TabelaGenerica<Convenio> tabelaGenerica;
-    private int itensPorPagina;
-    private long totalItens;
-    private long totalPaginas;
 
     @Override
     protected void init() {
@@ -44,14 +40,13 @@ public class ListaConvenio extends FormTableGeneric {
     @Override
     protected void carregarObjetos() {
         ConvenioDTO filtro = new ConvenioDTO();
-
-        filtro.setItensPorPagina(filtro.getItensPorPagina());
+        filtro.setItensPorPagina(10);
+        filtro.setPagina(0);
         this.convenioService = new ConvenioServiceImpl();
-        PageResponse pageResponse = this.convenioService.filtrando(filtro);
-        this.listaConvenios = pageResponse.getContent();
-        this.itensPorPagina = pageResponse.getSize();
-        this.totalItens = pageResponse.getTotalElements();
-        this.totalPaginas = pageResponse.getTotalPages();
+
+        this.pageResponse = this.convenioService.filtrando(filtro);
+        this.tabelaGenerica = new TabelaGenerica<>(new String[]{"Código", "Descrição"},
+                Arrays.asList(Convenio::getCodigo, Convenio::getNome), this.pageResponse);
     }
 
     @Override
@@ -66,26 +61,38 @@ public class ListaConvenio extends FormTableGeneric {
         tabb.putClientProperty(FlatClientProperties.STYLE, "" + "tabType:card");
 
         JPanel panel = new JPanel(new MigLayout("fillx,wrap,insets 10 0 10 0", "[fill]", "[][]0[fill,grow]"));
-        String[] colunas = {"Código", "Descrição"};
-
-        List<Function<Convenio, Object>> acessadores = Arrays.asList(
-                Convenio::getCodigo,
-                Convenio::getNome
-        );
-
-        this.tabelaGenerica = new TabelaGenerica<>(colunas, acessadores, this.listaConvenios, this.itensPorPagina);
 
         this.tabela = new JTable(this.tabelaGenerica);
         JScrollPane scrollPane = new JScrollPane(this.tabela);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        this.tabela.getTableHeader().setReorderingAllowed(false);
+        panel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "arc:40;" +
+                "background:$Table.background;");
+        this.tabela.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
+                "height:30;" +
+                "hoverBackground:null;" +
+                "pressedBackground:null;" +
+                "separatorColor:$TableHeader.background;");
+        this.tabela.putClientProperty(FlatClientProperties.STYLE, "" +
+                "rowHeight:70;" +
+                "showHorizontalLines:true;" +
+                "intercellSpacing:0,1;" +
+                "cellFocusColor:$TableHeader.hoverBackground;" +
+                "selectionBackground:$TableHeader.hoverBackground;" +
+                "selectionInactiveBackground:$TableHeader.hoverBackground;" +
+                "selectionForeground:$Table.foreground;");
+        scrollPane.getVerticalScrollBar().putClientProperty(FlatClientProperties.STYLE, "" +
+                "trackArc:$ScrollBar.thumbArc;" +
+                "trackInsets:3,3,3,3;" +
+                "thumbInsets:3,3,3,3;" +
+                "background:$Table.background;");
 
         panel.add(new JLabel("Lista de Convênios"), "gapx 20");
         panel.add(this.createHeaderAction());
         panel.add(scrollPane);
 
-        criarBotoesDeNavegacao(panel);
+        this.criarBotoesDeNavegacao(panel);
 
         tabb.addTab("Listagem", this.createBorder(panel));
         this.add(tabb, "gapx 7 7");
@@ -113,7 +120,7 @@ public class ListaConvenio extends FormTableGeneric {
 
         for (int pagina : paginasVisiveis) {
             JButton btnPagina = new JButton(String.valueOf(pagina));
-            btnPagina.addActionListener(e -> irParaPagina(pagina - 1));
+            btnPagina.addActionListener(e -> this.irParaPagina(pagina - 1));
             navPanel.add(btnPagina);
         }
 
@@ -123,38 +130,39 @@ public class ListaConvenio extends FormTableGeneric {
         panel.add(navPanel, "span 2, growx, center");
     }
 
+
     private void proximaPagina() {
-        tabelaGenerica.proximaPagina();
-        tabela.repaint();
+        this.tabelaGenerica.proximaPagina();
+        this.tabela.repaint();
     }
 
     private void paginaAnterior() {
-        tabelaGenerica.paginaAnterior();
-        tabela.repaint();
+        this.tabelaGenerica.paginaAnterior();
+        this.tabela.repaint();
     }
 
     private void irParaPagina(int pagina) {
-        tabelaGenerica.irParaPagina(pagina);
-        tabela.repaint();
+        ConvenioDTO filtro = new ConvenioDTO();
+        filtro.setItensPorPagina(10);
+        filtro.setPagina(pagina);
+
+        this.pageResponse = this.convenioService.filtrando(filtro);
+        this.tabelaGenerica.atualizarPagina(this.pageResponse);
+        this.tabela.repaint();
     }
 
     @Override
     protected void pesquisar(String texto) {
         ConvenioDTO filtro = new ConvenioDTO();
-
-        filtro.setItensPorPagina(filtro.getItensPorPagina());
+        filtro.setItensPorPagina(10);
         filtro.setNome(texto);
+        filtro.setPagina(0);
 
-        this.convenioService = new ConvenioServiceImpl();
-        PageResponse pageResponse = this.convenioService.filtrando(filtro);
-        this.listaConvenios = pageResponse.getContent();
-        this.itensPorPagina = pageResponse.getSize();
-        this.totalItens = pageResponse.getTotalElements();
-        this.totalPaginas = pageResponse.getTotalPages();
-
-        this.tabelaGenerica.atualizarDados(this.listaConvenios);
+        this.pageResponse = this.convenioService.filtrando(filtro);
+        this.tabelaGenerica.atualizarPagina(this.pageResponse);
         this.tabela.repaint();
     }
+
 
     private void dialogAdicionar(ActionEvent e) {
         if (this.convenioForm == null)

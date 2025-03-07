@@ -2,6 +2,7 @@ package raven.modal.demo.service;
 
 import raven.modal.demo.model.Paciente;
 import raven.modal.demo.model.dto.PacienteDTO;
+import raven.modal.demo.utils.PageResponse;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface PacienteService {
 
     List<Paciente> listar();
 
-    List<Paciente> filtrando(PacienteDTO filter);
+    PageResponse filtrando(PacienteDTO filter);
 }
