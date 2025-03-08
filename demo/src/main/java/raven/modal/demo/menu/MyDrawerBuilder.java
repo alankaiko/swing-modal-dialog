@@ -38,7 +38,7 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
     @Override
     public SimpleHeaderData getSimpleHeaderData() {
-        AvatarIcon icon = new AvatarIcon(getClass().getResource("/raven/modal/demo/drawer/image/profile.png"), 50, 50, 3.5f);
+        AvatarIcon icon = new AvatarIcon(getClass().getResource("/raven/modal/demo/drawer/image/user.png"), 50, 50, 3.5f);
         icon.setType(AvatarIcon.Type.MASK_SQUIRCLE);
         icon.setBorder(2, 2);
 
@@ -52,8 +52,8 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
 
         return new SimpleHeaderData()
                 .setIcon(icon)
-                .setTitle("Ra Ven")
-                .setDescription("raven@gmail.com");
+                .setTitle("Usuário Beta")
+                .setDescription("usuario@gmail.com");
     }
 
     private void changeAvatarIconBorderColor(AvatarIcon icon) {
@@ -79,24 +79,13 @@ public class MyDrawerBuilder extends SimpleDrawerBuilder {
                 new Item("Atendimentos", "dashboard.svg", ListaAtendimento.class),
                 new Item("Convênios", "dashboard.svg", ListaConvenio.class),
                 new Item("Exames", "dashboard.svg", ListaExame.class),
+                new Item("Grupo de Exames", "dashboard.svg", ListaGrupoExame.class),
                 new Item("Paciente", "dashboard.svg", ListaPaciente.class),
                 new Item("Procedimentos Médico", "dashboard.svg", ListaProcedimentoMedico.class),
                 new Item("Médicos", "dashboard.svg", ListaProfissional.class),
                 new Item("Siglas", "dashboard.svg", ListaSigla.class),
                 new Item("Captura", "dashboard.svg", FormCaptura.class),
-                new Item.Label("SWING UI"),
-                new Item("Forms", "forms.svg")
-                        .subMenu("Input", FormInput.class)
-                        .subMenu("Table", FormTable.class)
-                        .subMenu("Responsive Layout", FormResponsiveLayout.class),
-                new Item("Components", "components.svg")
-                        .subMenu("Modal", FormModal.class)
-                        .subMenu("Toast", FormToast.class)
-                        .subMenu("Date Time", FormDateTime.class)
-                        .subMenu("Avatar Icon", FormAvatarIcon.class)
-                        .subMenu("Slide Pane", FormSlidePane.class),
                 new Item("Setting", "setting.svg", FormSetting.class),
-                new Item("About", "about.svg"),
                 new Item("Logout", "logout.svg")
         };
 

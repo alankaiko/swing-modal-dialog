@@ -48,17 +48,16 @@ public class Login extends Form {
         add(panel);
 
         this.cmdLogin.addActionListener((e) -> {
-            FormManager.login();
-//            AuthToken.clear();
-//            AuthClient authClient = new AuthClient();
-//            String tokenJWT = authClient.obterTokenJWT(this.txtUsername.getText().trim(), this.txtPassword.getText());
-//
-//            if (tokenJWT != null) {
-//                AuthToken.setToken(tokenJWT);
-//                FormManager.login();
-//            } else {
-//                JOptionPane.showMessageDialog(this, "Falha no login!!");
-//            }
+            AuthToken.clear();
+            AuthClient authClient = new AuthClient();
+            String tokenJWT = authClient.obterTokenJWT(this.txtUsername.getText().trim(), this.txtPassword.getText());
+
+            if (tokenJWT != null) {
+                AuthToken.setToken(tokenJWT);
+                FormManager.login();
+            } else {
+                JOptionPane.showMessageDialog(this, "Falha no login!!");
+            }
         });
     }
 
